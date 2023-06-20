@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css">
+
+  <title>DSA5 Tools</title>
+  <style>
+   
+    body {
+      padding: 20px;
+      background-color: #eceaea;
+      font-family: 'Fira Sans', Arial, sans-serif;
+      max-width: 800px; /* Limiting the width of the web page */
+      margin: 0 auto; /* Centering the web page */
+    }
+
+    #filter-container {
+      margin-bottom: 20px;
+    }
+
+    #filter-input {
+      background-color: #f5f5f5;
+      font-family: 'Fira Sans', Arial, sans-serif;
+    }
+
+    /* For headings, use 'Fira Sans Condensed' */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Fira Sans Condensed', Arial, sans-serif;
+    }
+
+    /* Add space between list items */
+    #entry-list .list-group-item {
+      margin-bottom: 5px;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+     <div id="filter-container">
+      <input type="text" id="filter-input" class="form-control" placeholder="Volltextsuche">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="search-type" id="simple-search" value="simple" checked>
+        <label class="form-check-label" for="simple-search">Simple Search</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="search-type" id="regex-search" value="regex">
+        <label class="form-check-label" for="regex-search">Regular Expression Search</label>
+      </div>
+    </div>    
+    <ul id="entry-list" class="list-group"></ul>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
