@@ -4,7 +4,7 @@ const path = require('path');
 const url = require('url');
 const { JSDOM } = require('jsdom');
 
-const sourceDir = 'html2';
+const sourceDir = 'html';
 const destDir = 'markdown';
 
 const nhm = new htmlToMarkdown.NodeHtmlMarkdown(

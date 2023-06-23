@@ -5,7 +5,7 @@ const { JSDOM } = require('jsdom');
 
 // Configuration
 const baseUrl = 'https://ulisses-regelwiki.de/'; // Replace with the base URL
-const outputDir = 'html2'; // Replace with the path to the output directory
+const outputDir = 'html'; // Replace with the path to the output directory
 const requestDelay = 1000; // Delay in milliseconds between consecutive requests
 const requestLimit = 30; // Number of requests to be made
 
