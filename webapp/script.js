@@ -2,44 +2,7 @@ const entryList = document.getElementById('entry-list');
 const filterInput = document.getElementById('filter-input');
 
 function loadMarkdownFiles() {
-  const files = [
-    'markdown/Ablativum.md',
-    'markdown/Abvenenum.md',
-    'markdown/Adlerauge.md',
-    'markdown/Adlerschwinge.md',
-    'markdown/Aeolito.md',
-    'markdown/Aerofugo.md',
-    'markdown/Affenarme.md',
-    'markdown/Affenruf.md',
-    'markdown/Alpgestalt.md',
-    'markdown/Altisonus.md',
-    'markdown/Analys Arkanstruktur.md',
-    'markdown/Angst auslösen.md',
-    'markdown/Aquafaxius.md',
-    'markdown/Aquaqueris.md',
-    'markdown/Aquasphaero.md',
-    'markdown/Arachnea.md',
-    'markdown/KSF_Armbrist%C3%BCberdrehen.md',
-    'markdown/KSF_AufDistanzhalten.md',
-    'markdown/KSF_Auflaufen.md',
-    'markdown/KSF_Aufmerksamkeit.md',
-    'markdown/KSF_Ausfall.md',
-    'markdown/KSF_BallistischerSchuss.md',
-    'markdown/KSF_Beih%C3%A4ndigerKampf.md',
-    'markdown/KSF_Belastungsgew%C3%B6hnung.md',
-    'markdown/KSF_Berittene_Lanzenformation.md',
-    'markdown/KSF_BerittenerFlugkampf.md',
-    'markdown/KSF_BerittenerKampf.md',
-    'markdown/KSF_BerittenerSch%C3%BCtze.md',
-    'markdown/KSF_Besch%C3%BCtzer.md',
-    'markdown/KSF_Bet%C3%A4ubungsschlag.md',
-    'markdown/KSF_Blindkampf.md',
-    'markdown/magie.md',
-    'markdown/vor-und-nachteile.md',
-    'markdown/zauberauswahl.md'
-  ];
-
-  files.forEach((file) => {
+  mdFiles.forEach((file) => {
     fetch(file)
       .then((response) => response.text())
       .then((markdown) => {

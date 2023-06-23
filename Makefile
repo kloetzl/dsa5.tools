@@ -9,8 +9,9 @@ scrape:
 
 build:
 	cd backend && node html2md.js
-	$(RM) webapp/markdown/*.md
-	cp backend/markdown/*.md webapp/markdown
+	-$(RM) webapp/markdown/*.md
+	mkdir -p webapp/markdown
+	cp backend/markdown/*.md backend/markdown/filelist.js webapp/markdown
 
 clean:
-	$(RM) webapp/markdown backend/markdown backend/html
+	$(RM) -r webapp/markdown backend/markdown backend/html

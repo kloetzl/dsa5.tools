@@ -18,7 +18,7 @@ function rename(subpage) {
   const u = new URL(subpage, "http://localhost/");  // second parameter is mandatory but irrelevant
   const file = u.pathname;
   if (path.extname(file).toLowerCase() !== '.html') return null;
-  var filename = path.parse(file).name;
+  var filename = decodeURIComponent(path.parse(file).name);
 
   // rename 'zauber.html?zauber=Ablativum' to 'Ablativum.md'
   if (filename == "zauber") {
@@ -128,14 +128,24 @@ async function convert (subpage, sourceDir, destDir) {
 }
 
 
+async function createFilelist(created) {
+  const filelist = "/* This file has been automatically generated. Do not modify. */\n" +
+    "const mdFiles = [\n\t" +
+      created.map(filename => `'${destDir}/${filename}'`).join(',\n\t') +
+    "\n];\n";
+  return await fs.writeFile(`${destDir}/filelist.js`, filelist);
+}
+
+
 (async() => {
   // main entry point
   await fs.ensureDir(destDir);
   const files = await fs.readdir(sourceDir);
 
-  const created = files.map(async (subpage) => {
-    await convert(subpage, sourceDir, destDir);
-  });
+  const conversions = files.map(async (subpage) => 
+    await convert(subpage, sourceDir, destDir)
+  );
 
-  console.info(created); // todo: .then chain
+  const created = (await Promise.all(conversions)).filter(_=>_);
+  await createFilelist(created);
 })();
