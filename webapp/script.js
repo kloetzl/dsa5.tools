@@ -2,13 +2,13 @@ const entryList = document.getElementById('entry-list');
 const filterInput = document.getElementById('filter-input');
 
 function loadMarkdownFiles() {
+  const converter = new markdownit();
   mdFiles.forEach((file) => {
     fetch(file)
       .then((response) => response.text())
       .then((markdown) => {
         if (!markdown) return;
-        const converter = new showdown.Converter();
-        const html = converter.makeHtml(markdown);
+        const html = converter.render(markdown);
         const listItem = document.createElement('li');
         listItem.innerHTML = html;
         listItem.classList.add('list-group-item');
