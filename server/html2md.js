@@ -20,6 +20,7 @@ function rename(subpage) {
   if (path.extname(file).toLowerCase() !== '.html') return null;
   var filename = path.parse(file).name;
 
+  // rename 'zauber.html?zauber=Ablativum' to 'Ablativum.md'
   if (filename == "zauber") {
     filename = u.searchParams.get("zauber");
   }
@@ -31,53 +32,6 @@ function rename(subpage) {
   return filename + ".md";
 }
 
-// Create the destination directory if it doesn't exist
-fs.ensureDir(destDir, (err) => {
-  if (err) {
-    console.error('Error creating destination directory:', err);
-    return;
-  }
-
-  fs.readdir(sourceDir, (err, files) => {
-    if (err) {
-      console.error('Error reading directory:', err);
-      return;
-    }
-
-    files.forEach((subpage) => {
-      const filename = rename(subpage);
-      if (!filename) return;
-
-      const filePath = path.join(sourceDir, subpage);
-      const destFilePath = path.join(destDir, filename);
-
-      fs.readFile(filePath, 'utf8', (err, html) => {
-        if (err) {
-          console.error('Error reading file:', err);
-          return;
-        }
-
-        var markdown = nhm.translate(reformat(html));
-        markdown = patch(markdown, filename);
-        if (!markdown) {
-          console.log(`Ignoring empty file: ${filename}`);
-          return;
-        }
-
-        fs.writeFile(destFilePath, markdown, (err) => {
-          if (err) {
-            console.error('Error writing file:', err);
-            return;
-          }
-
-          console.log(`File converted and created: ${filename}`);
-        });
-      });
-    });
-  });
-});
-
-
 function patch(markdown, file) {
   return markdown;
 }
@@ -88,18 +42,27 @@ function reformat(htmlString) {
   const document = dom.window.document;
 
   const main = document.querySelector('#main > .mod_article');
-  if (!main) return "";
+  if (!main) return;
 
-  // Find the div elements with class="header"
-  const headerDivs = document.querySelectorAll('div.header');
-  headerDivs.forEach((div) => {
-    // Replace the div with an h1 element
-    const h1Element = document.createElement('h1');
-    h1Element.textContent = div.textContent;
-    div.parentNode.replaceChild(h1Element, div);
+  function replaceAs(selector, newType) {
+    main.querySelectorAll(selector).forEach(function (select) {
+      // Replace the select with an newType element
+      const newElement = document.createElement(newType);
+      newElement.textContent = select.textContent;
+      select.parentNode.replaceChild(newElement, select);
+    });
+  }
+
+  // cleanup
+  main.querySelectorAll('title').forEach((titleElement) => {
+    titleElement.remove();
   });
 
-  const spalte1Divs = document.querySelectorAll('div.spalte1');
+  replaceAs('div.header', 'h1');
+  // replaceAs('.body_einzeln + div:odd', 'b');  // :odd isn't supported atm.
+  replaceAs('.body_einzeln', 'h3');
+
+  const spalte1Divs = main.querySelectorAll('div.spalte1');
 
   // Iterate over the div.spalte1 elements
   spalte1Divs.forEach((div) => {
@@ -129,6 +92,50 @@ function reformat(htmlString) {
     }
   });
 
+  // remove all #s
+  main.innerHTML = main.innerHTML.replace(/#/g, '');
+
+  // has to be a leaf article
+  if (main.querySelectorAll('a').length) return;
+
   return main.outerHTML;
 }
 
+
+async function convert (subpage, sourceDir, destDir) {
+  const filename = rename(subpage);
+  if (!filename) return;
+
+  const filePath = path.join(sourceDir, subpage);
+  const destFilePath = path.join(destDir, filename);
+
+  const html = await fs.readFile(filePath, 'utf8');
+
+  const reformated = reformat(html);
+  if (!reformated) return;
+
+  var markdown = nhm.translate(reformated);
+  markdown = patch(markdown, filename);
+  if (!markdown) {
+    console.log(`Ignoring empty file: ${filename}`);
+    return;
+  }
+
+  await fs.writeFile(destFilePath, markdown);
+
+  console.log(`File converted and created: ${filename}`);
+  return filename;
+}
+
+
+(async() => {
+  // main entry point
+  await fs.ensureDir(destDir);
+  const files = await fs.readdir(sourceDir);
+
+  const created = files.map(async (subpage) => {
+    await convert(subpage, sourceDir, destDir);
+  });
+
+  console.info(created); // todo: .then chain
+})();
