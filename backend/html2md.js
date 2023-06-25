@@ -59,6 +59,11 @@ function reformat(htmlString) {
   const main = document.querySelector('#main > .mod_article');
   if (!main) return;
 
+  const breadcrumbs = document.querySelectorAll('.breadcrumb_boxed')[0].textContent.split('›');
+  var quote = document.createElement('blockquote');
+  quote.innerHTML = breadcrumbs.slice(1, -1).join('›');
+  main.insertBefore(quote, main.firstChild);
+
   function replaceAs(selector, newType) {
     main.querySelectorAll(selector).forEach(function (select) {
       // Replace the select with an newType element
