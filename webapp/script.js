@@ -15,8 +15,8 @@ async function loadMarkdownFiles() {
 
   var elements = await Promise.all(contents);
   elements.sort(function (a, b) {
-    const aa = a.querySelectorAll('h1, h2')[0].innerText;
-    const bb = b.querySelectorAll('h1, h2')[0].innerText;
+    const aa = (a.querySelectorAll('h1, h2') ?? [])[0]?.innerText;
+    const bb = (b.querySelectorAll('h1, h2') ?? [])[0]?.innerText;
     if (aa === bb) return 0;
     return aa < bb ? -1 : 1;
   });

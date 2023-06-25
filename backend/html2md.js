@@ -20,15 +20,30 @@ function rename(subpage) {
   if (path.extname(file).toLowerCase() !== '.html') return null;
   var filename = decodeURIComponent(path.parse(file).name);
 
-  // rename 'zauber.html?zauber=Ablativum' to 'Ablativum.md'
-  if (filename == "zauber") {
-    filename = u.searchParams.get("zauber");
-  }
-
   const blocklist = [/^_/, /^index/];
   const blocked = e => blocklist.some(r => r.test(e));
   if (blocked(filename)) return null;
 
+  // rename 'zauber.html?zauber=Ablativum' to 'Ablativum.md'
+  const getParam = {
+    'zauber' : 'zauber',
+    'liturgie' : 'liturgie',
+    'nachteil' : 'nachteil',
+    'ritual' : 'ritual',
+    'segen' : 'segen',
+    'talisman_karmal' : 'talisman',
+    'vorteil' : 'vorteil',
+    'zaubertrick' : 'zaubertrick',
+    'zeremonie' : 'zeremonie'
+  }
+  for (var kind in getParam) {
+    if (filename == kind) {
+      filename = u.searchParams.get(getParam[kind]);
+    }
+  }
+
+  // avoid problems like 'Begabte/r Aufreißer/in.md'
+  filename = filename.replace(/\//g, '_');
   return filename + ".md";
 }
 
