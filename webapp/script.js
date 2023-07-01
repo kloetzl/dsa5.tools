@@ -28,21 +28,71 @@ async function loadMarkdownFiles() {
   entryList.appendChild(wrapper);
 }
 
+
+function parseSearchQuery(query) {
+  const searchCriteria = [];
+  const regex = /(\w+)\((.*?)\)|(\w+)/g;
+  let match;
+
+  while ((match = regex.exec(query))) {
+    const [, type, value, plainWord] = match;
+    if (type) {
+      searchCriteria.push({ type, value });
+    } else if (plainWord) {
+      searchCriteria.push({ type: 'simple', value: plainWord });
+    }
+  }
+
+  return searchCriteria;
+}
+
+
+const filterFunctions = {
+  blockquote: (article, searchValue) => {
+    let b = article.querySelector('blockquote');
+    return b && b.innerText.toLowerCase().includes(searchValue.toLowerCase());
+  },
+  kategorie: function (article, searchValue) {
+    return this.blockquote(article, searchValue);
+  },
+  simple: (article, searchValue) => {
+    return article.innerText.toLowerCase().includes(searchValue.toLowerCase());
+  },
+  oder: (article, searchValue) => {
+    const words = searchValue.split(' ');
+    const haystack = article.innerText.toLowerCase();
+    return words.filter(word => word.trim()).some(word => haystack.includes(word.toLowerCase()))
+  },
+  name: (article, searchValue) => {
+    let element = article.querySelector('h1, h2');
+    return element && element.innerText.toLowerCase().includes(searchValue.toLowerCase());
+  },
+  regex: (article, searchValue) => {
+    let re = new RegExp(searchValue);
+    return re.test(article.innerText.toLowerCase());
+  }
+  // Add more filtering functions as needed
+};
+
+
 function filterEntries() {
-  const filterValue = filterInput.value.toLowerCase();
   const entries = entryList.getElementsByTagName('li');
-  const searchType = 'simple'; //document.querySelector('input[name="search-type"]:checked').value;
+
+  const filterValue = filterInput.value.toLowerCase();
+  const searchCriteria = parseSearchQuery(filterValue);
+  const matchesCriteria = (entry) => {
+    return searchCriteria.every(criteria => {
+      const {type, value} = criteria;
+      if (type in filterFunctions) {
+        return filterFunctions[type](entry, value);
+      }
+      console.error(`Unsupported filter expression: ${criteria}`);
+      return false;
+    });
+  };
 
   Array.from(entries).forEach((entry) => {
-    const text = entry.innerText.toLowerCase();
-    let isMatched = false;
-
-    if (searchType === 'simple') {
-      isMatched = text.includes(filterValue);
-    } else if (searchType === 'regex') {
-      const regex = new RegExp(filterValue, 'i');
-      isMatched = regex.test(text);
-    }
+    let isMatched = matchesCriteria(entry);
 
     if (isMatched) {
       entry.style.display = 'block';
@@ -50,7 +100,24 @@ function filterEntries() {
       entry.style.display = 'none';
     }
   });
+
+  document.getElementById('filter-input').classList.remove('is-invalid');
 }
 
-loadMarkdownFiles();
-filterInput.addEventListener('input', filterEntries);
+setTimeout(async function main() {
+  filterInput.addEventListener('input', function searchChange () {
+    clearTimeout(searchChange.debounceTimeoutId);
+    searchChange.debounceTimeoutId = setTimeout(() => {
+      const searchQuery = filterInput.value.trim();
+      const searchCriteria = parseSearchQuery(searchQuery);
+      filterEntries(searchCriteria);
+    }, 500); // Debounce delay in ms
+  });
+
+  await loadMarkdownFiles();
+
+  // add bootstrap styling
+  for (let table of document.getElementsByTagName('table')) {
+    table.classList.add('table');
+  }
+}, 1);
