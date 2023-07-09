@@ -8,7 +8,9 @@ const sourceDir = 'html';
 const destDir = 'markdown';
 
 const nhm = new htmlToMarkdown.NodeHtmlMarkdown(
-  /* options (optional) */ {}, 
+  {
+    textReplace: [[/#/g, '']]
+  },
   /* customTransformers (optional) */ undefined,
   /* customCodeBlockTranslators (optional) */ undefined
 );
@@ -35,7 +37,8 @@ function rename(subpage) {
     'vorteil' : 'vorteil',
     'zaubertrick' : 'zaubertrick',
     'zeremonie' : 'zeremonie'
-  }
+  };
+
   for (var kind in getParam) {
     if (filename == kind) {
       filename = u.searchParams.get(getParam[kind]);
@@ -47,6 +50,7 @@ function rename(subpage) {
   return filename + ".md";
 }
 
+
 function patch(markdown, file) {
   return markdown;
 }
@@ -57,7 +61,7 @@ function reformat(htmlString) {
   const document = dom.window.document;
 
   const main = document.querySelector('#main > .mod_article');
-  if (!main) return;
+  if (!main || !main.textContent.trim()) return;  // ignore empty articles
 
   const breadcrumbs = document.querySelectorAll('.breadcrumb_boxed')[0].textContent.split('›');
   var quote = document.createElement('blockquote');

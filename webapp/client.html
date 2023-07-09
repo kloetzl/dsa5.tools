@@ -76,6 +76,10 @@
           <li>Um noch genauer zu suchen können reguläre Ausdrücke verwendet werden. Der folgende Ausdruck findet alle Zauber die bei Hexen oder auch anderen Traditionen verbreitet sind: <tt>regex(Verbreitung: [^\n]*Hexen[^\n]*\n)</tt> . Unterstütz wird die JavaScript Syntax.</li>
           <li>Alle Suchfunktionen ignorieren Groß- und Kleinschreibung.</li>
         </ul>
+        <h4>Bekannte Probleme</h4>
+        <ul>
+          <li>Manche Tabellen sind kaputt weil sie im Original eine leere Zelle enthalten. Es gibt bereits einen PR in der html2md Bibliothek die ich verwende. https://github.com/crosstype/node-html-markdown/issues/38</li>
+        </ul>
       </div>
     </div>
   </div>
