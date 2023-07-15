@@ -5,10 +5,10 @@ serve:
 	http-server webapp &
 
 scrape:
-	cd backend && node scrape.js 2>&1 | tee $@.log
+	(cd backend && node scrape.js) &> $@.log
 
 build:
-	(cd backend && node html2md.js) > build.log
+	(cd backend && node html2md.js) > $@.log
 	-$(RM) webapp/markdown/*.md
 	mkdir -p webapp/markdown
 	cp backend/markdown/*.md backend/markdown/filelist.js webapp/markdown

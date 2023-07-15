@@ -8,6 +8,7 @@ const baseUrl = 'https://ulisses-regelwiki.de/'; // Replace with the base URL
 const outputDir = 'html'; // Replace with the path to the output directory
 const requestDelay = 1000; // Delay in milliseconds between consecutive requests
 const requestLimit = 30; // Number of requests to be made
+const queue = ['sf_kampfsonderfertigkeiten.html'];  // Initial subpage to visit
 
 // Create the output directory if it doesn't exist
 if (!fs.existsSync(outputDir)) {
@@ -20,16 +21,16 @@ const visitedSubpages = new Set();
 // Function to scrape a URL and save the HTML content
 async function scrapeUrl(url, outputFilename) {
   try {
-    const response = await axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36',
-      },
-    });
+    const response = await axios.get(url);
     const html = response.data;
     const outputPath = path.join(outputDir, outputFilename);
+
     fs.writeFileSync(outputPath, html);
     console.log(`Saved: ${outputPath}`);
     visitedSubpages.add(url);
+
+    const extractedLinks = extractLinks(html);
+    queue.push(...extractedLinks);
   } catch (error) {
     console.error(`Error scraping ${url}: ${error.message}`);
   }
@@ -61,20 +62,14 @@ function delay(ms) {
 
 // Function to start scraping
 async function startScraping() {
-  const queue = ['sf_kampfsonderfertigkeiten.html'];
   let requestCount = 0;
 
   while (requestCount < requestLimit && queue.length > 0) {
     const url = queue.shift();
-    const outputFilename = `${url.replace(/\//g, '_')}`;
+    const outputFilename = url.replace(/\//g, '_');
 
     await scrapeUrl(`${baseUrl}${url}`, outputFilename);
     await delay(requestDelay);
-
-    const response = await axios.get(`${baseUrl}${url}`);
-    const html = response.data;
-    const extractedLinks = extractLinks(html);
-    queue.push(...extractedLinks);
 
     requestCount++;
   }
