@@ -4,8 +4,13 @@ const filterInput = document.getElementById('filter-input');
 async function loadMarkdownFiles() {
   const converter = new markdownit();
   const contents = mdFiles.map(async function(path) {
-    const response = await fetch(path);
-    const markdown = await response.text();
+    try {
+      const response = await fetch(path);
+      var markdown = await response.text();
+    } catch (e) {
+      console.error('Failed to load ', path);
+      return null;
+    }
     const html = converter.render(markdown);
     const listItem = document.createElement('li');
     listItem.innerHTML = html;
@@ -13,7 +18,7 @@ async function loadMarkdownFiles() {
     return listItem;
   });
 
-  var elements = await Promise.all(contents);
+  var elements = (await Promise.all(contents)).filter(a => a !== null);
   elements.sort(function (a, b) {
     const aa = (a.querySelectorAll('h1, h2') ?? [])[0]?.innerText;
     const bb = (b.querySelectorAll('h1, h2') ?? [])[0]?.innerText;
