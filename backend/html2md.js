@@ -26,15 +26,18 @@ function rename(subpage) {
   const blocked = e => blocklist.some(r => r.test(e));
   if (blocked(filename)) return null;
 
-  // rename 'zauber.html?zauber=Ablativum' to 'Ablativum.md'
+  // rename 'zauber.html?zauber=Ablativum' to 'Ablativum.md', etc.
   const getParam = {
-    'zauber' : 'zauber',
+    'kampftechnik' : 'kampftechnik',
     'liturgie' : 'liturgie',
     'nachteil' : 'nachteil',
     'ritual' : 'ritual',
     'segen' : 'segen',
+    'talent': 'talent',
     'talisman_karmal' : 'talisman',
+    'traditionsartefakt' : 'traditionsartefakt',
     'vorteil' : 'vorteil',
+    'zauber' : 'zauber',
     'zaubertrick' : 'zaubertrick',
     'zeremonie' : 'zeremonie'
   };
