@@ -85,11 +85,17 @@ const filterFunctions = {
 };
 
 
-function filterEntries() {
-  const entries = entryList.getElementsByTagName('li');
+function serializeStateToURL(state) {
+  const params = new URLSearchParams();
+  for (let key in state) {
+    params.set(key, state[key]);
+  }
+  return '?' + params.toString();
+}
 
-  const filterValue = filterInput.value.toLowerCase();
-  const searchCriteria = parseSearchQuery(filterValue);
+
+function filterEntries(filterString) {
+  const searchCriteria = parseSearchQuery(filterString);
   const matchesCriteria = (entry) => {
     return searchCriteria.every(criteria => {
       const {type, value} = criteria;
@@ -101,6 +107,7 @@ function filterEntries() {
     });
   };
 
+  const entries = entryList.getElementsByTagName('li');
   Array.from(entries).forEach((entry) => {
     let isMatched = matchesCriteria(entry);
 
@@ -114,13 +121,15 @@ function filterEntries() {
   document.getElementById('filter-input').classList.remove('is-invalid');
 }
 
+
 setTimeout(async function main() {
   filterInput.addEventListener('input', function searchChange () {
     clearTimeout(searchChange.debounceTimeoutId);
     searchChange.debounceTimeoutId = setTimeout(() => {
-      const searchQuery = filterInput.value.trim();
-      const searchCriteria = parseSearchQuery(searchQuery);
-      filterEntries(searchCriteria);
+      const filterString = filterInput.value.toLowerCase();
+      filterEntries(filterString);
+      let newState = {filter: filterString};
+      history.pushState(newState, document.title, serializeStateToURL(newState));
     }, 500); // Debounce delay in ms
   });
 
@@ -130,4 +139,17 @@ setTimeout(async function main() {
   for (let table of document.getElementsByTagName('table')) {
     table.classList.add('table');
   }
+
+  window.addEventListener('popstate', (event) => {
+    const newState = event.state;
+    filterEntries(newState.filter);
+  });
+
+  if (window.location.search) {
+    const searchParams = new URLSearchParams(window.location.search);
+    let filterString =  searchParams.get('filter');
+    filterInput.value = filterString;
+    filterEntries(filterString);
+  }
+
 }, 1);
