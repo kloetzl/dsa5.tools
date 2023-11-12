@@ -9,9 +9,10 @@ scrape:
 
 build:
 	(cd backend && node html2md.js) > $@.log
+	(cd backend && node concat.js) > $@.log
 	-$(RM) webapp/markdown/*.md
-	mkdir -p webapp/markdown
-	cp backend/markdown/*.md backend/markdown/filelist.js webapp/markdown
+	mkdir -p webapp/categories
+	cp backend/categories/*.md backend/categories/filelist.js webapp/categories
 
 clean:
-	$(RM) -r webapp/markdown backend/markdown backend/html
+	$(RM) -r webapp/markdown backend/markdown backend/html backend/categories
