@@ -12,7 +12,7 @@ const separator = '\n---\n';
 // Function to extract the class from a .md file
 function extractClass(filePath) {
   const content = fs.readFileSync(filePath, 'utf8');
-  const match = content.match(/>\s*([\w\s-äöüÄÖÜß]+) ›|>\s*([\w\s-äöüÄÖÜß]+?)\n/);
+  const match = content.match(/>\s*([\w\s-äöüÄÖÜß,-]+) ›|>\s*([\w\s-äöüÄÖÜß,-]+?)\n/);
   return match ? (match[1] || match[2]) : 'unknown'; // If no match is found, use 'unknown' as the class
 }
 
