@@ -14,5 +14,8 @@ build:
 	mkdir -p webapp/categories
 	cp backend/categories/*.md backend/categories/filelist.js webapp/categories
 
+publish:
+	cp webapp/* -r www-virtual
+
 clean:
 	$(RM) -r webapp/markdown backend/markdown backend/html backend/categories
