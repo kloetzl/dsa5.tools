@@ -28,18 +28,28 @@ function rename(subpage) {
 
   // rename 'zauber.html?zauber=Ablativum' to 'Ablativum.md', etc.
   const getParam = {
-    'kampftechnik' : 'kampftechnik',
-    'liturgie' : 'liturgie',
-    'nachteil' : 'nachteil',
-    'ritual' : 'ritual',
-    'segen' : 'segen',
+    'animistenkraft': 'animistenkraft',
+    'elfenlied': 'elfenlied',
+    'geodenritual': 'geodenritual',
+    'herrschaftsritual': 'herrschaftsritual',
+    'hexenfluch': 'hexenfluch',
+    'kampftechnik': 'kampftechnik',
+    'liturgie': 'liturgie',
+    'nachteil': 'nachteil',
+    'ritual': 'ritual',
+    'schelmenstreich': 'schelmenstreich',
+    'segen': 'segen',
     'talent': 'talent',
-    'talisman_karmal' : 'talisman',
-    'traditionsartefakt' : 'traditionsartefakt',
-    'vorteil' : 'vorteil',
-    'zauber' : 'zauber',
-    'zaubertrick' : 'zaubertrick',
-    'zeremonie' : 'zeremonie'
+    'talisman_karmal': 'talisman',
+    'traditionsartefakt': 'traditionsartefakt',
+    'vorteil': 'vorteil',
+    'zauber': 'zauber',
+    'zaubermelodie': 'zaubermelodie',
+    'zauberrune': 'zauberrune',
+    'zaubertanz': 'zaubertanz',
+    'zaubertrick': 'zaubertrick',
+    'zeremonie': 'zeremonie',
+    'zibiljaritual': 'zibiljaritual'
   };
 
   for (var kind in getParam) {
