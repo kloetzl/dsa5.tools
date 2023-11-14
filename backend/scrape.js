@@ -47,7 +47,7 @@ function extractLinks(html) {
     const blocklist = [/\//, /#/, /@/, /WdV18/, /start.html/];
     const not_blocked = e => !blocklist.some(r => r.test(e));
 
-    if (href && !visitedSubpages.has(baseUrl + href) && not_blocked(href)) {
+    if (href && !visitedSubpages.has(href) && not_blocked(href)) {
       extractedLinks.push(href);
     }
   }
