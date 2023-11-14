@@ -4,11 +4,11 @@ const path = require('path');
 const { JSDOM } = require('jsdom');
 
 // Configuration
-const baseUrl = 'https://ulisses-regelwiki.de/'; // Replace with the base URL
+const baseUrl = 'https://dsa.ulisses-regelwiki.de/'; // Replace with the base URL
 const outputDir = 'html'; // Replace with the path to the output directory
-const requestDelay = 1000; // Delay in milliseconds between consecutive requests
-const requestLimit = 30; // Number of requests to be made
-const queue = ['sf_kampfsonderfertigkeiten.html'];  // Initial subpage to visit
+const requestDelay = 200; // Delay in milliseconds between consecutive requests
+const requestLimit = 10000; // Number of requests to be made
+const queue = ['hexenfluchauswahl.html'];  // Initial subpage to visit
 
 // Create the output directory if it doesn't exist
 if (!fs.existsSync(outputDir)) {
