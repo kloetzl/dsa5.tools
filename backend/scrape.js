@@ -66,6 +66,7 @@ async function startScraping() {
 
   while (requestCount < requestLimit && queue.length > 0) {
     const url = queue.shift();
+    if (visitedSubpages.has(baseUrl + url)) continue;
     const outputFilename = url.replace(/\//g, '_');
 
     await scrapeUrl(`${baseUrl}${url}`, outputFilename);
