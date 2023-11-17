@@ -28,7 +28,7 @@ function rename(subpage) {
 
   // rename 'zauber.html?zauber=Ablativum' to 'Ablativum.md', etc.
   const rUrl = /\?\w+=(.+)$/;
-  const match = rUrl.exec(filename);
+  const match = rUrl.exec(subpage);
   if (match) {
     filename = match[1];
   }
