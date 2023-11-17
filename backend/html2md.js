@@ -16,6 +16,39 @@ const nhm = new htmlToMarkdown.NodeHtmlMarkdown(
 );
 
 
+function jobQueue(consume) {
+  var queue = [];
+  const maxJobs = 10;
+  var runningJobs = 0;
+  var signal;
+
+  async function tryConsume() {
+    while (runningJobs < maxJobs && queue.length) {
+      runningJobs++;
+      const job = queue.shift();
+      await consume(job);
+      runningJobs--;
+    }
+    if (runningJobs == 0 && queue == 0) {
+      if (signal) {
+        signal();
+      }
+    }
+  }
+
+  return {
+    push : function (args) {
+      queue.push(args);
+      tryConsume();
+    },
+    done: async function () {
+      // There is a race condition here.
+      return new Promise((resolve)=>{signal = resolve});
+    }
+  };
+}
+
+
 function rename(subpage) {
   const u = new URL(subpage, "http://localhost/");  // second parameter is mandatory but irrelevant
   const file = u.pathname;
@@ -135,7 +168,7 @@ async function convert (subpage, sourceDir, destDir) {
 
   await fs.writeFile(destFilePath, markdown);
 
-  console.log(`File converted and created: ${filename}`);
+  console.log(`Converted ${subpage} => ${filename}`);
   return filename;
 }
 
@@ -154,10 +187,18 @@ async function createFilelist(created) {
   await fs.ensureDir(destDir);
   const files = await fs.readdir(sourceDir);
 
-  const conversions = files.map(async (subpage) => 
-    await convert(subpage, sourceDir, destDir)
-  );
+  var res = [];
+  var queue = jobQueue(async (subpage) => {
+    var temp = await convert(subpage, sourceDir, destDir);
+    res.push(temp)
+  });
 
-  const created = (await Promise.all(conversions)).filter(_=>_);
+  for (var file of files) {
+    queue.push(file);
+  }
+
+  await queue.done();
+
+  const created = res.filter(_=>_);
   await createFilelist(created);
 })();
