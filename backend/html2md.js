@@ -3,6 +3,7 @@ const htmlToMarkdown = require('node-html-markdown');
 const path = require('path');
 const url = require('url');
 const { JSDOM } = require('jsdom');
+var gfs = require('graceful-fs')
 
 const sourceDir = 'html';
 const destDir = 'markdown';
@@ -27,35 +28,10 @@ function rename(subpage) {
   if (blocked(filename)) return null;
 
   // rename 'zauber.html?zauber=Ablativum' to 'Ablativum.md', etc.
-  const getParam = {
-    'animistenkraft': 'animistenkraft',
-    'elfenlied': 'elfenlied',
-    'geodenritual': 'geodenritual',
-    'herrschaftsritual': 'herrschaftsritual',
-    'hexenfluch': 'hexenfluch',
-    'kampftechnik': 'kampftechnik',
-    'liturgie': 'liturgie',
-    'nachteil': 'nachteil',
-    'ritual': 'ritual',
-    'schelmenstreich': 'schelmenstreich',
-    'segen': 'segen',
-    'talent': 'talent',
-    'talisman_karmal': 'talisman',
-    'traditionsartefakt': 'traditionsartefakt',
-    'vorteil': 'vorteil',
-    'zauber': 'zauber',
-    'zaubermelodie': 'zaubermelodie',
-    'zauberrune': 'zauberrune',
-    'zaubertanz': 'zaubertanz',
-    'zaubertrick': 'zaubertrick',
-    'zeremonie': 'zeremonie',
-    'zibiljaritual': 'zibiljaritual'
-  };
-
-  for (var kind in getParam) {
-    if (filename == kind) {
-      filename = u.searchParams.get(getParam[kind]);
-    }
+  const rUrl = /\?\w+=(.+)$/;
+  const match = rUrl.exec(filename);
+  if (match) {
+    filename = match[1];
   }
 
   // avoid problems like 'Begabte/r Aufreißer/in.md'
@@ -146,7 +122,7 @@ async function convert (subpage, sourceDir, destDir) {
   const filePath = path.join(sourceDir, subpage);
   const destFilePath = path.join(destDir, filename);
 
-  const html = await fs.readFile(filePath, 'utf8');
+  const html = await gfs.readFile(filePath, 'utf8');
 
   const reformated = reformat(html);
   if (!reformated) return;
@@ -158,7 +134,7 @@ async function convert (subpage, sourceDir, destDir) {
     return;
   }
 
-  await fs.writeFile(destFilePath, markdown);
+  await gfs.writeFile(destFilePath, markdown);
 
   console.log(`File converted and created: ${filename}`);
   return filename;
