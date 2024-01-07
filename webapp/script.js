@@ -41,7 +41,7 @@ async function loadMarkdownFiles() {
 
 function parseSearchQuery(query) {
   const searchCriteria = [];
-  const regex = /(\w+)\((.*?)\)|(\w+)/g;
+  const regex = /(\w+)\((.*?)\)|(\S+)/g;
   let match;
 
   while ((match = regex.exec(query))) {
