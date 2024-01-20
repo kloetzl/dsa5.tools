@@ -39,10 +39,9 @@ function jobQueue(consume) {
   return {
     push : function (args) {
       queue.push(args);
-      tryConsume();
+      Promise.resolve().then(tryConsume);
     },
     done: async function () {
-      // There is a race condition here.
       return new Promise((resolve)=>{signal = resolve});
     }
   };
