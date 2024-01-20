@@ -140,7 +140,15 @@ function reformat(htmlString) {
   main.innerHTML = main.innerHTML.replace(/#/g, '');
 
   // has to be a leaf article
-  if (main.querySelectorAll('a').length) return;
+  const links = main.querySelectorAll('a');
+  if (links.length > 1) return;
+
+  for (var link of links) {
+    const span = document.createElement('span');
+    span.textContent = link.textContent;
+    link.parentNode.insertBefore(span, link);
+    span.parentNode.removeChild(link);
+  }
 
   return main.outerHTML;
 }
