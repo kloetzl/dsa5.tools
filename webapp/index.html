@@ -63,16 +63,16 @@
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
         <div class="container">
-          <p class=lead>Willkommen bei DSA5.Tools. Hier findest du eine alternative Übersicht zu den Inhalten des offiziellen Regelwikis. Benutze das Suchfeld um die Inhalte zu filtern. Viel Spaß beim Stöbern!</p>
+          <p class=lead>Willkommen bei DSA5.Tools. Hier findest du eine alternative Übersicht zu den Inhalten des offiziellen Regelwikis. Benutze das Suchfeld um die Inhalte zu filtern. Viel Spaß beim Finden!</p>
         </div>
       </div>
       <div class="tab-pane fade container" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
         <p>Diese Seite ist eine alternative Darstellung der Inhalte aus dem großartigen Ulisses-Regelwiki. Auch wenn es zuerst unübersichtlich wirkt, lassen sich bestimmte Inhalte dank der besonderen Suche schnell finden.</p>
         <ul>
-          <li>Wenn du einen einfachen Suchbegriff wie zum Beispiel <tt>Sturm</tt> eintippst, werden nur noch Artikel angezeigt die diesen Begriff enthalten. Für unser Beispiel wäre dies <i>Sturmangriff, Froststurm</i> aber auch <i>Falkengestalt</i>. Bei mehreren Suchbegriffen, also z.B. <tt>Sturm Pferd</tt>, werden nur Artikel angegeben die alle Suchbegriffe enthalten.</li>
-          <li>Über die einfache Stichwortsuche hinaus gibt es erweiterte Funktionen. Die Funktion <tt>oder()</tt> zeigt alle Artikel an die zumindest eins der gegeben Wörter enthalten. Dies kann auch mit regulären Suchen kombiniert werden. Zum Beispiel <tt>Zauberspr oder(Hexen Druiden)</tt> zeigt alle Zauber die von Hexen und Druiden erlernt werden können (und noch mehr).</li>
+          <li>Wenn du einen einfachen Suchbegriff wie zum Beispiel <tt>Sturm</tt> eintippst, werden nur noch Artikel angezeigt die diesen Begriff im Namen enthalten. Für unser Beispiel wären dies unter anderem <i>Sturmangriff</i> und <i>Froststurm</i>. Der gleiche Effekt lässt sich auch erzielen wenn du <tt>name(Sturm)</tt> eingibst. Bei mehreren Suchbegriffen, also z.B. <tt>Sturm Pferd</tt>, werden nur Artikel angegeben die alle Suchbegriffe im Namen enthalten.</li>
+          <li>Wenn du noch nicht genau weißt in welchem Artikel dein Begriff vorhanden ist, kannst du <tt>volltext(Sturm)</tt> nutzen. Zum obigen Ergebnis wird noch <i>Falkengestalt</i> angezeigt.
+          <li>Über die einfache Stichwortsuche hinaus gibt es erweiterte Funktionen. Die Funktion <tt>oder()</tt> zeigt alle Artikel an die zumindest eins der gegeben Wörter enthalten. Dies kann auch mit regulären Suchen kombiniert werden. Zum Beispiel <tt>volltext(Zauberspr) oder(Hexen Druiden)</tt> zeigt alle Zauber die von Hexen und Druiden erlernt werden können (und noch mehr).</li>
           <li>Die Artikel lassen sich auch nach Kategorie filtern. So lässt sich mittels <tt>kategorie(Kampfsonderfert)</tt> die Anzeige auf Kampfsonderfertigkeiten beschränken.</li>
-          <li>Wie oben gesehen enthalten viele Artikel den Begriff <i>Sturm</i>. Um nur den Artikel zum Sturmangriff zu sehen kannst du <tt>name(Sturman)</tt> verwenden.</li>
           <li>Um noch genauer zu suchen können reguläre Ausdrücke verwendet werden. Der folgende Ausdruck findet alle Zauber die bei Hexen oder auch anderen Traditionen verbreitet sind: <tt>regex(Verbreitung: [^\n]*Hexen[^\n]*\n)</tt> . Unterstütz wird die JavaScript Syntax.</li>
           <li>Alle Suchfunktionen ignorieren Groß- und Kleinschreibung.</li>
         </ul>

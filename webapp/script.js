@@ -49,7 +49,7 @@ function parseSearchQuery(query) {
     if (type) {
       searchCriteria.push({ type, value });
     } else if (plainWord) {
-      searchCriteria.push({ type: 'simple', value: plainWord });
+      searchCriteria.push({ type: 'name', value: plainWord });
     }
   }
 
@@ -65,7 +65,7 @@ const filterFunctions = {
   kategorie: function (article, searchValue) {
     return this.blockquote(article, searchValue);
   },
-  simple: (article, searchValue) => {
+  volltext: (article, searchValue) => {
     return article.innerText.toLowerCase().includes(searchValue.toLowerCase());
   },
   oder: (article, searchValue) => {
