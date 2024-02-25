@@ -2,34 +2,32 @@ const entryList = document.getElementById('entry-list');
 const filterInput = document.getElementById('filter-input');
 
 const separator = '\n---\n';
+var converter;
 
-async function loadMarkdownFiles() {
-  const converter = new markdownit();
-  const contents = mdFiles.map(async function (path) {
-    try {
-      const response = await fetch(path);
-      var markdown = await response.text();
-    } catch (e) {
-      console.error('Failed to load ', path);
-      return null;
-    }
-    const entries = markdown.split(separator);
-    return entries.filter(t => t).map(function (markdown) {
-      const html = converter.render(markdown);
-      const listItem = document.createElement('li');
-      listItem.innerHTML = html;
-      listItem.classList.add('list-group-item');
-      return listItem;
-    });
+async function loadParseRender(path) {
+  try {
+    const response = await fetch(path);
+    var markdown = await response.text();
+  } catch (e) {
+    console.error('Failed to load ', path);
+    return null;
+  }
+
+  const entries = markdown.split(separator);
+  let elements = entries.filter(t => t).map(function parse(markdown) {
+    const html = converter.render(markdown);
+    const listItem = document.createElement('li');
+    listItem.innerHTML = html;
+    listItem.classList.add('list-group-item');
+    return listItem;
   });
 
-  var elements = (await Promise.all(contents)).flat().filter(a => a !== null);
   // In order to accelerate the sorting we precompute the sort key here.
   let keys = elements.map(element => [
     (element.querySelectorAll('h1, h2') ?? [])[0]?.innerText,
     element
   ]);
-  keys.sort(function (a, b) {
+  keys.sort(function sortCmp(a, b) {
     const aa = a[0];
     const bb = b[0];
     if (aa === bb) return 0;
@@ -150,7 +148,14 @@ setTimeout(async function main() {
     filterInput.value = filterString;
   }
 
-  await loadMarkdownFiles();
+  converter = new markdownit();
+  const contents = mdFiles.map(async function (path) {
+    await loadParseRender(path);
+    if (filterString) {
+      filterEntries(filterString);
+    }
+  });
+  await Promise.all(contents);
 
   // add bootstrap styling
   for (let table of document.getElementsByTagName('table')) {
