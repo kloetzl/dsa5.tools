@@ -133,13 +133,6 @@ setTimeout(async function main() {
     }, 500); // Debounce delay in ms
   });
 
-  await loadMarkdownFiles();
-
-  // add bootstrap styling
-  for (let table of document.getElementsByTagName('table')) {
-    table.classList.add('table');
-  }
-
   window.addEventListener('popstate', (event) => {
     const newState = event.state;
     filterEntries(newState.filter);
@@ -147,9 +140,18 @@ setTimeout(async function main() {
 
   if (window.location.search) {
     const searchParams = new URLSearchParams(window.location.search);
-    let filterString =  searchParams.get('filter');
+    var filterString = searchParams.get('filter');
     filterInput.value = filterString;
-    filterEntries(filterString);
   }
 
+  await loadMarkdownFiles();
+
+  // add bootstrap styling
+  for (let table of document.getElementsByTagName('table')) {
+    table.classList.add('table');
+  }
+
+  if (filterString) {
+    filterEntries(filterString);
+  }
 }, 1);
