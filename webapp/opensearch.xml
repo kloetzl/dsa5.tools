@@ -1,0 +1,7 @@
+<OpenSearchDescription>
+	<ShortName>DSA5.Tools</ShortName>
+	<Description>DSA5.Tools - Schnellsuche</Description>
+	<Image height="16" width="16" type="image/png">https://dsa5.tools/favicon.png</Image>
+	<Url type="text/html" method="get" template="https://www.dsa5.tools/?filter={searchTerms}"/>
+	<Url type="application/opensearchdescription+xml" rel="self" template="https://dsa5.tools/opensearch.xml" />
+</OpenSearchDescription>
