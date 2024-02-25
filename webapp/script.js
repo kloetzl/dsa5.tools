@@ -24,12 +24,18 @@ async function loadMarkdownFiles() {
   });
 
   var elements = (await Promise.all(contents)).flat().filter(a => a !== null);
-  elements.sort(function (a, b) {
-    const aa = (a.querySelectorAll('h1, h2') ?? [])[0]?.innerText;
-    const bb = (b.querySelectorAll('h1, h2') ?? [])[0]?.innerText;
+  // In order to accelerate the sorting we precompute the sort key here.
+  let keys = elements.map(element => [
+    (element.querySelectorAll('h1, h2') ?? [])[0]?.innerText,
+    element
+  ]);
+  keys.sort(function (a, b) {
+    const aa = a[0];
+    const bb = b[0];
     if (aa === bb) return 0;
     return aa < bb ? -1 : 1;
   });
+  elements = keys.map(arr => arr[1])
 
   const wrapper = document.createDocumentFragment();
   for (var listItem of elements) {
