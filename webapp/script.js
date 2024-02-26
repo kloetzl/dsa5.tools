@@ -4,7 +4,7 @@ const filterInput = document.getElementById('filter-input');
 const separator = '\n---\n';
 var converter;
 
-async function loadParseRender(path) {
+async function loadParse(path) {
   try {
     const response = await fetch(path);
     var markdown = await response.text();
@@ -27,14 +27,19 @@ async function loadParseRender(path) {
     (element.querySelectorAll('h1, h2') ?? [])[0]?.innerText,
     element
   ]);
+
   keys.sort(function sortCmp(a, b) {
     const aa = a[0];
     const bb = b[0];
     if (aa === bb) return 0;
     return aa < bb ? -1 : 1;
   });
-  elements = keys.map(arr => arr[1])
 
+  return keys.map(arr => arr[1]);
+}
+
+
+function render(wrapper) {
   const wrapper = document.createDocumentFragment();
   for (var listItem of elements) {
     wrapper.appendChild(listItem);
@@ -98,7 +103,7 @@ function serializeStateToURL(state) {
 }
 
 
-function filterEntries(filterString) {
+function filterEntries(filterString, elements) {
   const searchCriteria = parseSearchQuery(filterString);
   const matchesCriteria = (entry) => {
     return searchCriteria.every(criteria => {
@@ -111,7 +116,7 @@ function filterEntries(filterString) {
     });
   };
 
-  const entries = entryList.getElementsByTagName('li');
+  const entries = elements ?? entryList.getElementsByTagName('li');
   Array.from(entries).forEach((entry) => {
     let isMatched = matchesCriteria(entry);
 
@@ -150,10 +155,11 @@ setTimeout(async function main() {
 
   converter = new markdownit();
   const contents = mdFiles.map(async function (path) {
-    await loadParseRender(path);
+    const elements = await loadParse(path);
     if (filterString) {
-      filterEntries(filterString);
+      filterEntries(filterString, elements);
     }
+    render(elements);
   });
   await Promise.all(contents);
 
