@@ -4,6 +4,7 @@ const filterInput = document.getElementById('filter-input');
 const separator = '\n---\n';
 var converter;
 
+
 async function loadParse(path) {
   try {
     const response = await fetch(path);
@@ -39,30 +40,12 @@ async function loadParse(path) {
 }
 
 
-function render(wrapper) {
+function render(elements) {
   const wrapper = document.createDocumentFragment();
   for (var listItem of elements) {
     wrapper.appendChild(listItem);
   }
   entryList.appendChild(wrapper);
-}
-
-
-function parseSearchQuery(query) {
-  const searchCriteria = [];
-  const regex = /(\w+)\((.*?)\)|(\S+)/g;
-  let match;
-
-  while ((match = regex.exec(query))) {
-    const [, type, value, plainWord] = match;
-    if (type) {
-      searchCriteria.push({ type, value });
-    } else if (plainWord) {
-      searchCriteria.push({ type: 'name', value: plainWord });
-    }
-  }
-
-  return searchCriteria;
 }
 
 
@@ -94,27 +77,40 @@ const filterFunctions = {
 };
 
 
-function serializeStateToURL(state) {
-  const params = new URLSearchParams();
-  for (let key in state) {
-    params.set(key, state[key]);
+function parseSearchQuery(query) {
+  const regex = /(\w+)\((.*?)\)|(\S+)/g;
+  var searchCriteria = [];
+  let match;
+
+  while ((match = regex.exec(query))) {
+    const [, type, value, plainWord] = match;
+    if (type) {
+      searchCriteria.push({ type, value });
+    } else if (plainWord) {
+      searchCriteria.push({ type: 'name', value: plainWord });
+    }
   }
-  return '?' + params.toString();
+
+  searchCriteria = searchCriteria.filter(criterium => {
+    const {type, value} = criterium;
+    if (type in filterFunctions) {
+      return true;
+    }
+    console.error(`Unsupported filter expression: ${criterium}`);
+    return false;
+  });
+
+  return function doesMatch(entry) {
+    return searchCriteria.every(criterium => {
+      const {type, value} = criterium;
+      return filterFunctions[type](entry, value);
+    });
+  };
 }
 
 
 function filterEntries(filterString, elements) {
-  const searchCriteria = parseSearchQuery(filterString);
-  const matchesCriteria = (entry) => {
-    return searchCriteria.every(criteria => {
-      const {type, value} = criteria;
-      if (type in filterFunctions) {
-        return filterFunctions[type](entry, value);
-      }
-      console.error(`Unsupported filter expression: ${criteria}`);
-      return false;
-    });
-  };
+  const matchesCriteria = parseSearchQuery(filterString);
 
   const entries = elements ?? entryList.getElementsByTagName('li');
   Array.from(entries).forEach((entry) => {
@@ -131,8 +127,17 @@ function filterEntries(filterString, elements) {
 }
 
 
+function serializeStateToURL(state) {
+  const params = new URLSearchParams();
+  for (let key in state) {
+    params.set(key, state[key]);
+  }
+  return '?' + params.toString();
+}
+
+
 setTimeout(async function main() {
-  filterInput.addEventListener('input', function searchChange () {
+  filterInput.addEventListener('input', function searchChange() {
     clearTimeout(searchChange.debounceTimeoutId);
     searchChange.debounceTimeoutId = setTimeout(() => {
       const filterString = filterInput.value.toLowerCase();
