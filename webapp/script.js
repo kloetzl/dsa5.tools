@@ -25,7 +25,7 @@ async function loadParse(path) {
 
   // In order to accelerate the sorting we precompute the sort key here.
   let keys = elements.map(element => [
-    (element.querySelectorAll('h1, h2') ?? [])[0]?.innerText,
+    (element.querySelectorAll('h1, h2') ?? [])[0]?.textContent,
     element
   ]);
 
@@ -52,26 +52,26 @@ function render(elements) {
 const filterFunctions = {
   blockquote: (article, searchValue) => {
     let b = article.querySelector('blockquote');
-    return b && b.innerText.toLowerCase().includes(searchValue);
+    return b && b.textContent.toLowerCase().includes(searchValue);
   },
   kategorie: function (article, searchValue) {
     return this.blockquote(article, searchValue);
   },
   volltext: (article, searchValue) => {
-    return article.innerText.toLowerCase().includes(searchValue);
+    return article.textContent.toLowerCase().includes(searchValue);
   },
   oder: (article, searchValue) => {
     const words = searchValue.split(' ');
-    const haystack = article.innerText.toLowerCase();
+    const haystack = article.textContent.toLowerCase();
     return words.filter(word => word.trim()).some(word => haystack.includes(word.toLowerCase()))
   },
   name: (article, searchValue) => {
     let element = article.querySelector('h1, h2');
-    return element && element.innerText.toLowerCase().includes(searchValue);
+    return element && element.textContent.toLowerCase().includes(searchValue);
   },
   regex: (article, searchValue) => {
     let re = new RegExp(searchValue);
-    return re.test(article.innerText.toLowerCase());
+    return re.test(article.textContent.toLowerCase());
   }
   // Add more filtering functions as needed
 };
