@@ -52,13 +52,13 @@ function render(elements) {
 const filterFunctions = {
   blockquote: (article, searchValue) => {
     let b = article.querySelector('blockquote');
-    return b && b.innerText.toLowerCase().includes(searchValue.toLowerCase());
+    return b && b.innerText.toLowerCase().includes(searchValue);
   },
   kategorie: function (article, searchValue) {
     return this.blockquote(article, searchValue);
   },
   volltext: (article, searchValue) => {
-    return article.innerText.toLowerCase().includes(searchValue.toLowerCase());
+    return article.innerText.toLowerCase().includes(searchValue);
   },
   oder: (article, searchValue) => {
     const words = searchValue.split(' ');
@@ -67,7 +67,7 @@ const filterFunctions = {
   },
   name: (article, searchValue) => {
     let element = article.querySelector('h1, h2');
-    return element && element.innerText.toLowerCase().includes(searchValue.toLowerCase());
+    return element && element.innerText.toLowerCase().includes(searchValue);
   },
   regex: (article, searchValue) => {
     let re = new RegExp(searchValue);
@@ -78,6 +78,7 @@ const filterFunctions = {
 
 
 function parseSearchQuery(query) {
+  query = query.toLowerCase();
   const regex = /(\w+)\((.*?)\)|(\S+)/g;
   var searchCriteria = [];
   let match;
@@ -99,6 +100,12 @@ function parseSearchQuery(query) {
     console.error(`Unsupported filter expression: ${criterium}`);
     return false;
   });
+
+  if (searchCriteria.length == 1) {
+    const {type, value} = searchCriteria[0];
+    const fn = filterFunctions[type];
+    return (entry => fn(entry, value));
+  }
 
   return function doesMatch(entry) {
     return searchCriteria.every(criterium => {
