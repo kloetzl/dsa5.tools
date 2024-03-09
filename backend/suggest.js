@@ -76,12 +76,14 @@ function suggest (haystack, needle) {
 }
 
 const haystack = fs.readFileSync('haystack.txt', 'utf8').split('\n');
-console.log(haystack);
 
 http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'application/json'});
-  console.log(url.parse(req.url).term);
-  data = ['lol'];
+  res.writeHead(200, {'Content-Type': 'application/application/x-suggestions+json'});
+  let term = url.parse(req.url).query.substring(5);
+  console.log(term);
+  let data = [term,
+    ['lol', 'Wuchtschlag']
+  ];
   res.end(JSON.stringify(data));
 }).listen(62444);
 
