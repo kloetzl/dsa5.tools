@@ -81,7 +81,7 @@ http.createServer(function (req, res) {
   const query = url.parse(req.url).query;
   if (!query) return;
 
-  let term = query.subst(5, 20);
+  let term = query.substr(5, 20);
   if (!term) return;
 
   let data = [term,
