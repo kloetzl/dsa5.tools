@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const http = require('http');
 const url = require('url');
 
-function glocal (haystack, needle) {
+function glocal(haystack, needle) {
   haystack = ' ' + haystack.toLowerCase();
   needle = ' ' + needle.toLowerCase();
 
@@ -75,15 +75,15 @@ function suggest (haystack, needle) {
   return good.filter(a => a[1] >= best / 2).map(a => a[0]);
 }
 
-const haystack = fs.readFileSync('haystack.txt', 'utf8').split('\n');
+const haystack = fs.readFileSync('haystack.txt', 'utf8').split('\n').map(term => term.trim());
 
 http.createServer(function (req, res) {
   const query = url.parse(req.url).query;
   if (!query) return;
 
-  let term = query.substring(5);
+  let term = query.subst(5, 20);
+  if (!term) return;
 
-  console.log(term);
   let data = [term,
     suggest(haystack, term)
   ];
@@ -91,5 +91,3 @@ http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'application/application/x-suggestions+json'});
   res.end(JSON.stringify(data));
 }).listen(62444);
-
-
