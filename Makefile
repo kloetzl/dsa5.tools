@@ -10,6 +10,7 @@ scrape:
 build:
 	(cd backend && node html2md.js) > $@.log
 	(cd backend && node concat.js) >> $@.log
+	grep --no-filename '^# ' backend/markdown/*.md | cut -c 3- > haystack.txt
 	-$(RM) webapp/markdown/*.md
 	mkdir -p webapp/categories
 	cp backend/categories/*.md backend/categories/filelist.js webapp/categories
