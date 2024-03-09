@@ -85,7 +85,7 @@ http.createServer(function (req, res) {
 
   console.log(term);
   let data = [term,
-    suggest(haystack, needle)
+    suggest(haystack, term)
   ];
 
   res.writeHead(200, {'Content-Type': 'application/application/x-suggestions+json'});
