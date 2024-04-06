@@ -9,6 +9,7 @@ const outputDir = 'html'; // Replace with the path to the output directory
 const requestDelay = 200; // Delay in milliseconds between consecutive requests
 const requestLimit = 10000; // Number of requests to be made
 const queue = ['hexenfluchauswahl.html'];  // Initial subpage to visit
+const bvPath = "buildVersion";
 
 // Create the output directory if it doesn't exist
 if (!fs.existsSync(outputDir)) {
@@ -78,5 +79,15 @@ async function startScraping() {
   console.log(queue);
 }
 
+function bumpBuildVersion() {
+  var bv = 0;
+  try {
+    bv = +fs.readFileSync(bvPath);
+  } catch (e){}
+  bv++;
+  fs.writeFileSync(bvPath, `${bv}\n`);
+}
+
 // Start scraping
 startScraping();
+bumpBuildVersion();

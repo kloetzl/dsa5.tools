@@ -8,6 +8,7 @@ const sourceDir = 'markdown';
 const destDir = 'categories';
 
 const separator = '\n---\n';
+const bvPath = "buildVersion";
 
 // Function to extract the class from a .md file
 function extractClass(filePath) {
@@ -17,13 +18,16 @@ function extractClass(filePath) {
 }
 
 
-async function createFilelist(created) {
-  const filelist = "/* This file has been automatically generated. Do not modify. */\n" +
-    "const mdFiles = [\n\t" +
-      created.map(filename => `'${filename}'`).join(',\n\t') +
-    "\n];\n";
-    console.log(filelist)
-  return await fs.writeFile(`${destDir}/filelist.js`, filelist);
+async function createFilelist(created, buildVersion) {
+  const files = created.map(filename => `'${filename}'`).join(',\n\t');
+  const contents = `/* This file has been automatically generated. Do not modify. */
+const buildVersion = ${buildVersion};
+const mdFiles = [
+    ${files}
+];
+`;
+  console.log(contents)
+  return await fs.writeFile(`${destDir}/filelist.js`, contents);
 }
 
 (async() => {
@@ -66,7 +70,9 @@ async function createFilelist(created) {
   });
   console.log(fileList)
 
-  await createFilelist(fileList);
+  const buildVersion = +fs.readFileSync(bvPath);
+
+  await createFilelist(fileList, buildVersion);
   console.log('File list created.');
 })();
 
