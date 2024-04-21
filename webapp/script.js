@@ -7,7 +7,7 @@ var converter;
 
 async function loadParse(path) {
   try {
-    const response = await fetch(path);
+    const response = await fetch(path, { cache: "reload" });
     var markdown = await response.text();
   } catch (e) {
     console.error('Failed to load ', path);
@@ -143,6 +143,72 @@ function serializeStateToURL(state) {
 }
 
 
+function asPromise(thing) {
+  return new Promise((resolve, reject) => {
+    thing.onsuccess = () => resolve(thing.result);
+    thing.onerror = () => reject(thing.error);
+  });
+}
+
+
+function openIDB() {
+  return new Promise(function (resolve, reject) {
+    let conn = indexedDB.open('dsa5tools', buildVersion);
+    let rebuild = false;
+    conn.onupgradeneeded = function (e) {
+      // This fires before 'onsuccess'
+      conn.result.createObjectStore('htmlcache');
+      // e.version < buildVersion is false on initial creation of the DB
+      rebuild = true;
+    };
+    conn.onsuccess = function (e) {
+      resolve({db: conn.result, rebuild: rebuild});
+    };
+    conn.onerror = function (e) {
+      reject(conn.error);
+    };
+  });
+}
+
+
+async function makeFetcher(){
+  // TODO: Check for enabled setting!
+  return loadParse;
+
+  let {db, rebuild} = await openIDB();
+
+  async function fromIDB(path) {
+    let tx = db.transaction('htmlcache', 'readonly');
+    let st = tx.objectStore('htmlcache');
+    let str = await asPromise(st.get(path));
+    if (str) {
+      const htmlNodeStrings = JSON.parse(str);
+
+      // Create new HTML nodes from the strings
+      return htmlNodeStrings.map(htmlString => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlString;
+        return tempDiv.firstChild;
+      });
+    } else {
+      // key wasn't in the DB
+      return fetchAndStore(path);
+    }
+  }
+
+  async function fetchAndStore(path) {
+    let elements = await loadParse(path);
+    let tx = db.transaction('htmlcache', 'readwrite');
+    let st = tx.objectStore('htmlcache');
+    let str = JSON.stringify(elements.map(node => node.outerHTML));
+    await asPromise(st.put(str, path)); // TODO: delay?
+    return elements;
+  }
+
+  return rebuild ? fetchAndStore : fromIDB;
+}
+
+
 setTimeout(async function main() {
   filterInput.addEventListener('input', function searchChange() {
     clearTimeout(searchChange.debounceTimeoutId);
@@ -165,9 +231,11 @@ setTimeout(async function main() {
     filterInput.value = filterString;
   }
 
+  const smartFetch = await makeFetcher();
+
   converter = new markdownit();
   const contents = mdFiles.map(async function (path) {
-    const elements = await loadParse(path);
+    const elements = await smartFetch(path);
     if (filterString) {
       filterEntries(filterString, elements);
     }
