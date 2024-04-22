@@ -172,9 +172,6 @@ function openIDB() {
 
 
 async function makeFetcher(){
-  // TODO: Check for enabled setting!
-  return loadParse;
-
   let {db, rebuild} = await openIDB();
 
   async function fromIDB(path) {
@@ -251,4 +248,11 @@ setTimeout(async function main() {
   if (filterString) {
     filterEntries(filterString);
   }
+
+  const clearCache = document.getElementById('clearcache');
+  clearCache.addEventListener('click', async function (e) {
+    await asPromise(indexedDB.deleteDatabase('dsa5tools'));
+
+    document.getElementById('success').style.display = "inline";
+  });
 }, 1);
