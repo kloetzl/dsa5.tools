@@ -173,6 +173,7 @@ function openIDB() {
 
 async function makeFetcher(){
   let {db, rebuild} = await openIDB();
+  makeFetcher.db = db;
 
   async function fromIDB(path) {
     let tx = db.transaction('htmlcache', 'readonly');
@@ -251,6 +252,7 @@ setTimeout(async function main() {
 
   const clearCache = document.getElementById('clearcache');
   clearCache.addEventListener('click', async function (e) {
+    makeFetcher.db.close();
     await asPromise(indexedDB.deleteDatabase('dsa5tools'));
 
     document.getElementById('success').style.display = "inline";
