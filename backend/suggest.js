@@ -83,6 +83,7 @@ http.createServer(function (req, res) {
 
   let term = query.substr(5, 20);
   if (!term) return;
+  term = term.replace(/\+/g, ' ');
 
   let data = [term,
     suggest(haystack, term)
