@@ -1,5 +1,5 @@
 SHELL=zsh
-.PHONY: serve scrape build clean
+.PHONY: serve scrape build publish clean
 
 serve:
 	http-server webapp &

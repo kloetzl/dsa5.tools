@@ -1,0 +1,14 @@
+{
+	"name": "DSA5.Tools",
+	"start_url": "/",
+	"icons": [
+		{
+			"src": "favicon.png",
+			"sizes": "240x240",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	],
+	"display": "standalone",
+	"background_color": "#eceaea"
+}
