@@ -55,7 +55,7 @@ const filterFunctions = {
     return b && b.textContent.toLowerCase().includes(searchValue);
   },
   kategorie: function (article, searchValue) {
-    return this.blockquote(article, searchValue);
+    return filterFunctions.blockquote(article, searchValue);
   },
   volltext: (article, searchValue) => {
     return article.textContent.toLowerCase().includes(searchValue);
