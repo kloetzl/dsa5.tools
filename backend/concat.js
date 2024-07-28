@@ -25,6 +25,12 @@ const buildVersion = ${buildVersion};
 const mdFiles = [
     ${files}
 ];
+
+// Prefetch markdown files. Saves about 300ms on a fresh open.
+const cacheMode = /force-reload/.test(document.location) ? "reload" : "default";
+const mdRequests = Object.fromEntries(
+  mdFiles.map(path => [path, fetch(path, {"cache" : cacheMode })])
+);
 `;
   console.log(contents)
   return await fs.writeFile(`${destDir}/filelist.js`, contents);

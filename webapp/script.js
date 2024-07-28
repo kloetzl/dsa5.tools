@@ -7,7 +7,7 @@ var converter;
 
 async function loadParse(path) {
   try {
-    const response = await fetch(path, { cache: "reload" });
+    const response = await mdRequests[path];
     var markdown = await response.text();
   } catch (e) {
     console.error('Failed to load ', path);
@@ -40,7 +40,7 @@ async function loadParse(path) {
 }
 
 
-function render(elements) {
+function display(elements) {
   const wrapper = document.createDocumentFragment();
   for (var listItem of elements) {
     wrapper.appendChild(listItem);
@@ -61,9 +61,9 @@ const filterFunctions = {
     return article.textContent.toLowerCase().includes(searchValue);
   },
   oder: (article, searchValue) => {
-    const words = searchValue.split(' ');
+    const words = searchValue.toLowerCase().split(' ');
     const haystack = article.textContent.toLowerCase();
-    return words.filter(word => word.trim()).some(word => haystack.includes(word.toLowerCase()))
+    return words.filter(word => word.trim()).some(word => haystack.includes(word))
   },
   name: (article, searchValue) => {
     let element = article.querySelector('h1, h2');
@@ -237,7 +237,7 @@ setTimeout(async function main() {
     if (filterString) {
       filterEntries(filterString, elements);
     }
-    render(elements);
+    display(elements);
   });
   await Promise.all(contents);
 

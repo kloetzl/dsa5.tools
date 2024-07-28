@@ -9,6 +9,7 @@
   <link rel="manifest" href="pwamanifest.json">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="search" type="application/opensearchdescription+xml" title="DSA5.Tools - Schnellsuche" href="opensearch.xml" />
+  <script src="categories/filelist.js"></script>
 
   <title>DSA5 Tools</title>
   <style>
@@ -74,6 +75,7 @@
           <li>Um noch genauer zu suchen können reguläre Ausdrücke verwendet werden. Der folgende Ausdruck findet alle Zauber die bei Hexen oder auch anderen Traditionen verbreitet sind: <tt>regex(Verbreitung: [^\n]*Hexen[^\n]*\n)</tt> . Unterstütz wird die JavaScript Syntax.</li>
           <li>Alle Suchfunktionen ignorieren Groß- und Kleinschreibung.</li>
         </ul>
+
         <h4>Bekannte Probleme</h4>
         <ul>
           <li>Manche Tabellen sind kaputt weil sie im Original eine leere Zelle enthalten. Es gibt bereits einen <a href=https://github.com/crosstype/node-html-markdown/issues/38>PR</a> in der html2md Bibliothek die ich verwende.</li>
@@ -88,7 +90,10 @@
 
         <h4>Datenschutz</h4>
         <p>Diese Webseite speichert keine personenbezogenen Daten; weder in serverseitigen Logs, noch per Cookies im Browser. Es werden allerdings die Artikel in einem Browser-seitigen Cache vorrätig gehalten. Dies dient einzig der beschleunigten Darstellung. Der Cache kann über die folgende Schaltfläche geleert werden.</p>
-        <p><button id=clearcache style="btn btn-primary">Cache leeren.</button> <span style="display:none" id=success>Erfolgreich.</span></p>
+        <p>
+          <button id=clearcache style="btn btn-primary">Cache leeren.</button> <span style="display:none" id=success>Erfolgreich.</span><br>
+          <a href="?force-reload"><button>Cache neuladen</button></a>
+        </p>
       </div>
     </div>
   </div>
@@ -100,7 +105,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="categories/filelist.js"></script>
   <script src="script.js"></script>
 </body>
 

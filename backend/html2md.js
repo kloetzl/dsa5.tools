@@ -77,6 +77,7 @@ function patch(markdown, file) {
 
 
 function reformat(htmlString) {
+  htmlString = htmlString.replaceAll("\uFEFF", "&nbsp;");
   const dom = new JSDOM(htmlString);
   const document = dom.window.document;
 
