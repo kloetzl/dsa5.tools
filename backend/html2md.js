@@ -181,15 +181,6 @@ async function convert (subpage, sourceDir, destDir) {
 }
 
 
-async function createFilelist(created) {
-  const filelist = "/* This file has been automatically generated. Do not modify. */\n" +
-    "const mdFiles = [\n\t" +
-      created.map(filename => `'${destDir}/${filename}'`).join(',\n\t') +
-    "\n];\n";
-  return await fs.writeFile(`${destDir}/filelist.js`, filelist);
-}
-
-
 (async() => {
   // main entry point
   await fs.ensureDir(destDir);
@@ -206,7 +197,4 @@ async function createFilelist(created) {
   }
 
   await queue.done();
-
-  const created = res.filter(_=>_);
-  await createFilelist(created);
 })();
