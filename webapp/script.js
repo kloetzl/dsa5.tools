@@ -157,7 +157,9 @@ function openIDB() {
     let rebuild = false;
     conn.onupgradeneeded = function (e) {
       // This fires before 'onsuccess'
-      conn.result.createObjectStore('htmlcache');
+      if (!conn.result.objectStoreNames.contains('htmlcache')) {
+        conn.result.createObjectStore('htmlcache');
+      }
       // e.version < buildVersion is false on initial creation of the DB
       rebuild = true;
     };
