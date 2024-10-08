@@ -62,7 +62,8 @@ function suggest (haystack, needle) {
   for (var label of haystack) {
     var score = glocal(label, needle);
     if (score > 0) {
-      suggestions.push([label, score]);
+      // break ties towards shorter labels
+      suggestions.push([label, score + 1 / label.length]);
     }
   }
 
