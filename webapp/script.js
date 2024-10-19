@@ -54,7 +54,7 @@ const filterFunctions = {
     let b = article.querySelector('blockquote');
     return b && b.textContent.toLowerCase().includes(searchValue);
   },
-  kategorie: function (article, searchValue) {
+  kategorie: (article, searchValue) => {
     return filterFunctions.blockquote(article, searchValue);
   },
   volltext: (article, searchValue) => {
@@ -66,7 +66,7 @@ const filterFunctions = {
     return words.filter(word => word.trim()).some(word => haystack.includes(word))
   },
   name: (article, searchValue) => {
-    let element = article.querySelector('h1, h2');
+    let element = querySelector('h1, h2');
     return element && element.textContent.toLowerCase().includes(searchValue);
   },
   regex: (article, searchValue) => {
@@ -119,7 +119,7 @@ function parseSearchQuery(query) {
 function filterEntries(filterString, elements) {
   const matchesCriteria = parseSearchQuery(filterString);
 
-  const entries = elements ?? entryList.getElementsByTagName('li');
+  const entries = elements ?? entryList.getElementsByClassName('list-group-item');
   Array.from(entries).forEach((entry) => {
     let isMatched = matchesCriteria(entry);
 
@@ -209,14 +209,105 @@ async function makeFetcher(){
 }
 
 
-setTimeout(async function main() {
+function glocal(haystack, needle) {
+  haystack = ' ' + haystack.toLowerCase();
+  needle = ' ' + needle.toLowerCase();
+
+  const H = haystack.length - 1;
+  const N = needle.length - 1;
+
+  const MATCH = 2.0;
+  const MISMATCH = -3.0;
+  const GAP = -1.0;
+
+  var matrix = []; // N x H
+  for (let i = 0; i <= N; i++) {
+    matrix[i] = Array(H + 1);
+  }
+  // We could get away with O(min(N, H)) memory but I don't care atm.
+
+  // init, prefer matches starting at the beginning
+  matrix[0][0] = MATCH * 2;
+  for (let j = 1; j <= H; j++) {
+    // favor matches at whole words
+    matrix[0][j] = haystack[j] == ' ' ? MATCH : GAP;
+  }
+  for (let i = 1; i <= N; i++) {
+    matrix[i][0] = needle[i] == ' ' ? MATCH : GAP;
+  }
+
+  // align needle against haystack
+  for (let i = 1; i <= N; i++) {
+    for (let j = 1; j <= H; j++) {
+      var diag = matrix[i - 1][j - 1] + (haystack[j] == needle[i] ? MATCH : MISMATCH);
+
+      var top = matrix[i - 1][j] + GAP;
+      var left = matrix[i][j - 1] + GAP;
+
+      var score = Math.max(diag, top, left);
+
+      if (i > 1 && j > 1) {
+        // ignore swaps such as 'wuhctschlag'
+        var swapped = haystack[j] == needle[i - 1] && haystack[j - 1] == needle[i];
+        if (swapped) {
+          score = Math.max(score, matrix[i - 2][j - 2] + MATCH);
+        }
+      }
+
+      matrix[i][j] = score;
+    }
+  }
+
+  // The needle should be matched completely. But I don't do matrix[N][H] as
+  // that favors short haystacks.
+  return Math.max(...matrix[N]);
+}
+
+
+function later(callback) {
+  Promise.resolve().then(callback)
+}
+
+
+function tryReorder(filterString) {
+  const isComplex = /(\w+)\((.*?)\)/g.test(filterString);
+  if (isComplex) return;
+
+  const visible = Array.from(entryList.getElementsByClassName('list-group-item'))
+    .filter(entry => entry.style.display == "block");
+
+  if (visible.length > 20 || visible.length < 2) return;
+
+  var scoresAndElements = visible.map(function (entry) {
+    const haystack = entry.querySelector('h1, h2').textContent.toLowerCase();
+    const score = glocal(haystack, filterString);
+    return [score + 1 / haystack.length, entry];
+  });
+
+  scoresAndElements = scoresAndElements
+    .filter(pair => pair[0] > 0)
+    .sort((a,b) => b[0] - a[0]); // descending
+
+  const bestScore = scoresAndElements[0][0];
+  const elements = scoresAndElements
+    .filter(pair => pair[0] == bestScore)
+    .map(pair => pair[1]);
+
+  // hoist best entries
+  entryList.prepend(...elements);
+}
+
+
+later(async function main() {
   filterInput.addEventListener('input', function searchChange() {
     clearTimeout(searchChange.debounceTimeoutId);
     searchChange.debounceTimeoutId = setTimeout(() => {
       const filterString = filterInput.value.toLowerCase();
       filterEntries(filterString);
-      let newState = {filter: filterString};
+      const newState = {filter: filterString};
       history.pushState(newState, document.title, serializeStateToURL(newState));
+
+      later(() => tryReorder(filterString));
     }, 500); // Debounce delay in ms
   });
 
@@ -227,7 +318,7 @@ setTimeout(async function main() {
 
   if (window.location.search) {
     const searchParams = new URLSearchParams(window.location.search);
-    var filterString = searchParams.get('filter');
+    const filterString = searchParams.get('filter');
     filterInput.value = filterString;
   }
 
@@ -259,4 +350,4 @@ setTimeout(async function main() {
 
     document.getElementById('success').style.display = "inline";
   });
-}, 1);
+});
