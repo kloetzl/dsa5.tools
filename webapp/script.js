@@ -66,7 +66,7 @@ const filterFunctions = {
     return words.filter(word => word.trim()).some(word => haystack.includes(word))
   },
   name: (article, searchValue) => {
-    let element = querySelector('h1, h2');
+    let element = article.querySelector('h1, h2');
     return element && element.textContent.toLowerCase().includes(searchValue);
   },
   regex: (article, searchValue) => {
@@ -318,7 +318,7 @@ later(async function main() {
 
   if (window.location.search) {
     const searchParams = new URLSearchParams(window.location.search);
-    const filterString = searchParams.get('filter');
+    var filterString = searchParams.get('filter');
     filterInput.value = filterString;
   }
 
