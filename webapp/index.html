@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <link rel="icon" href="favicon.png">
   <link rel="apple-touch-icon" href="favicon.png">
   <link rel="manifest" href="pwamanifest.json">
@@ -28,59 +29,255 @@
 
   <title>DSA5 Tools</title>
   <style>
-   
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --background-color: #f5f5f5;
+      --card-background: #ffffff;
+      --text-color: #333333;
+      --highlight-color: #e74c3c;
+    }
+    
     body {
-      padding: 20px;
-      background-color: #eceaea;
+      padding: 15px;
+      background-color: var(--background-color);
       font-family: 'Fira Sans', Arial, sans-serif;
-      max-width: 800px; /* Limiting the width of the web page */
-      margin: 0 auto; /* Centering the web page */
+      max-width: 800px;
+      margin: 0 auto;
+      color: var(--text-color);
+      text-align: justify;
+      hyphens: auto;
+      -webkit-hyphens: auto; /* Safari */
+      -ms-hyphens: auto;
     }
 
-    #filter-container {
-      margin-bottom: 20px;
-      margin-top: 20px;
+    .card {
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
+      border: none;
+      background-color: var(--card-background);
+    }
+
+    .nav-tabs {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-tabs .nav-link {
+      border: none;
+      color: var(--text-color);
+      font-weight: 500;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .nav-tabs .nav-link:hover {
+      color: var(--secondary-color);
+      background-color: rgba(52, 152, 219, 0.05);
+    }
+
+    .nav-tabs .nav-link.active {
+      color: var(--secondary-color);
+      border-bottom: 3px solid var(--secondary-color);
+      font-weight: 600;
+    }
+
+    .search-container {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
     }
 
     #filter-input {
-      background-color: #f5f5f5;
+      background-color: var(--card-background);
       font-family: 'Fira Sans', Arial, sans-serif;
+      padding-left: 40px;
+      padding-right: 90px;
+      border-radius: 8px;
+      height: 48px;
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+      flex-grow: 1;
+    }
+
+    #filter-input:focus {
+      box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+      border-color: var(--secondary-color);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+    }
+
+    .clear-search {
+      position: absolute;
+      right: 70px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: none;
+      z-index: 5;
+    }
+
+    .category-dropdown {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 5;
     }
 
     /* For headings, use 'Fira Sans Condensed' */
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Fira Sans Condensed', Arial, sans-serif;
+      color: var(--primary-color);
     }
 
-    /* Add space between list items */
+    .category-breadcrumb {
+      background-color: rgba(52, 152, 219, 0.1);
+      border-radius: 6px;
+      padding: 0.4rem 0.7rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      display: inline-block;
+    }
+
+    .breadcrumb-item {
+      color: var(--secondary-color);
+    }
+
+    .breadcrumb-separator {
+      color: #6c757d;
+      margin: 0 0.3rem;
+    }
+
+    /* Entry list styling */
     #entry-list .list-group-item {
-      margin-bottom: 5px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s ease;
+      border-left: 4px solid transparent;
+    }
+
+    #entry-list .list-group-item:hover {
+      border-left: 4px solid var(--secondary-color);
+      background-color: rgba(52, 152, 219, 0.05);
+    }
+
+    .entry-title {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      font-family: 'Fira Sans Condensed', Arial, sans-serif;
+      color: var(--primary-color);
+      font-size: 1.25rem;
+    }
+
+    .entry-attribute {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+
+    .entry-description {
+      margin-top: 0.5rem;
       text-align: justify;
     }
 
+    /* Tab content styles */
     #nav-tabContent {
-      margin-top: 16px;
+      margin-top: 10px;
+      padding: 0.8rem;
     }
 
+    .lead {
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+    }
+
+    .dropdown-menu {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .dropdown-toggle.btn-sm {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      background-color: #f8f9fa;
+      border-color: #dee2e6;
+    }
+
+    .dropdown-toggle.btn-sm:hover {
+      background-color: #e9ecef;
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 576px) {
+      body {
+        padding: 8px;
+      }
+      
+      .card {
+        margin-bottom: 10px;
+      }
+      
+      .nav-tabs .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+      }
+      
+      #filter-input {
+        height: 42px;
+        padding-right: 80px;
+      }
+      
+      .entry-title {
+        font-size: 1.1rem;
+      }
+      
+      #entry-list .list-group-item {
+        padding: 0.6rem;
+      }
+      
+      .clear-search {
+        right: 65px;
+      }
+    }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="card">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
-        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Über</button>
+        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">
+          <i class="bi bi-house-door me-1"></i> Home
+        </button>
+        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
+          <i class="bi bi-info-circle me-1"></i> Über
+        </button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
-        <div class="container">
-          <p class=lead>Willkommen bei DSA5.Tools. Hier findest du eine alternative Übersicht zu den Inhalten des offiziellen Regelwikis. Benutze das Suchfeld um die Inhalte zu filtern. Viel Spaß beim Finden!</p>
+        <div class="container-fluid">
+          <p class="lead">Willkommen bei DSA5.Tools. Hier findest du eine alternative Übersicht zu den Inhalten des offiziellen Regelwikis. Benutze das Suchfeld um die Inhalte zu filtern. Viel Spaß beim Finden!</p>
         </div>
       </div>
-      <div class="tab-pane fade container" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+      <div class="tab-pane fade container-fluid" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
         <p>Diese Seite ist eine alternative Darstellung der Inhalte aus dem großartigen Ulisses-Regelwiki. Auch wenn es zuerst unübersichtlich wirkt, lassen sich bestimmte Inhalte dank der besonderen Suche schnell finden.</p>
         <ul>
           <li>Wenn du einen einfachen Suchbegriff wie zum Beispiel <tt>Sturm</tt> eintippst, werden nur noch Artikel angezeigt die diesen Begriff im Namen enthalten. Für unser Beispiel wären dies unter anderem <i>Sturmangriff</i> und <i>Froststurm</i>. Der gleiche Effekt lässt sich auch erzielen wenn du <tt>name(Sturm)</tt> eingibst. Bei mehreren Suchbegriffen, also z.B. <tt>Sturm Pferd</tt>, werden nur Artikel angegeben die alle Suchbegriffe im Namen enthalten.</li>
@@ -113,14 +310,29 @@
     </div>
   </div>
 
-  <div id="filter-container">
-    <input type="text" id="filter-input" class="form-control form-control-lg is-invalid" placeholder="Suchen…" autofocus>
+  <div class="search-container">
+    <div class="search-wrapper">
+      <i class="bi bi-search search-icon"></i>
+      <input type="text" id="filter-input" class="form-control form-control-lg" placeholder="Suchen…" autofocus>
+      <button class="clear-search" id="clear-search" aria-label="Suche löschen">
+        <i class="bi bi-x-circle-fill"></i>
+      </button>
+      <div class="category-dropdown">
+        <button class="btn btn-sm dropdown-toggle btn-sm" type="button" id="category-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-filter"></i> Alle
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" id="category-list" aria-labelledby="category-dropdown">
+          <li><a class="dropdown-item active" href="#" data-category="all">Alle Kategorien</a></li>
+          <!-- Categories will be added dynamically -->
+        </ul>
+      </div>
+    </div>
   </div>
+
   <ul id="entry-list" class="list-group"></ul>
 
   <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js"></script>
   <script src="script.js"></script>
 </body>
-
 </html>

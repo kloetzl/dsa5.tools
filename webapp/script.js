@@ -42,9 +42,7 @@ async function loadParse(path) {
 
 function display(elements) {
   const wrapper = document.createDocumentFragment();
-  for (var listItem of elements) {
-    wrapper.appendChild(listItem);
-  }
+  wrapper.append(...elements);
   entryList.appendChild(wrapper);
 }
 
@@ -116,18 +114,79 @@ function parseSearchQuery(query) {
 }
 
 
+
+function extractCategoryFromEntry(entry) {
+  const blockquote = entry.querySelector('blockquote');
+  if (!blockquote) return null;
+
+  const text = blockquote.textContent.trim();
+  // Extract everything before the first "›"
+  const parts = text.split('›');
+  return parts.length > 0 ? parts[0].trim() : null;
+}
+
+function buildCategoryDropdown() {
+  const categoryList = document.getElementById('category-list');
+  
+  // Sample categories
+
+  const entries = Array.from(document.getElementsByClassName('list-group-item'));
+  const categories = new Set();
+
+  entries.forEach(entry => {
+    const category = extractCategoryFromEntry(entry);
+    if (category) {
+      entry.setAttribute('data-category', category); // Used for filtering
+      categories.add(category);
+    }
+  });
+
+  // Add categories to dropdown
+  categories.forEach(category => {
+    const item = document.createElement('li');
+    item.innerHTML = `<a class="dropdown-item" href="#" data-category="${category}">${category}</a>`;
+    categoryList.appendChild(item);
+  });
+
+  // Category selection
+  categoryList.addEventListener('click', function(e) {
+    if (e.target.classList.contains('dropdown-item')) {
+      e.preventDefault();
+      
+      // Remove active class from all items
+      document.querySelectorAll('#category-list .dropdown-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Add active class to clicked item
+      e.target.classList.add('active');
+      
+      // Update dropdown button text
+      const selectedText = e.target.textContent;
+      const categoryDropdown = document.getElementById('category-dropdown');
+      categoryDropdown.innerHTML = `<i class="bi bi-filter"></i> ${selectedText === 'Alle Kategorien' ? 'Alle' : selectedText}`;
+      
+      // Here you would trigger your filter function
+      filterEntries(`kategorie(${selectedText})`);
+    }
+  });
+  return;
+}
+
+
 function filterEntries(filterString, elements) {
   const matchesCriteria = parseSearchQuery(filterString);
 
+  const selectedCategory = document.getElementById('category-select')?.value;
   const entries = elements ?? entryList.getElementsByClassName('list-group-item');
-  Array.from(entries).forEach((entry) => {
-    let isMatched = matchesCriteria(entry);
 
-    if (isMatched) {
-      entry.style.display = 'block';
-    } else {
-      entry.style.display = 'none';
-    }
+  Array.from(entries).forEach((entry) => {
+    const entryCategory = entry.getAttribute('data-category');
+    const categoryMatches = !selectedCategory || entryCategory === selectedCategory;
+    const textMatches = matchesCriteria(entry);
+
+    const isVisible = categoryMatches && textMatches;
+    entry.style.display = isVisible ? 'block' : 'none';
   });
 
   document.getElementById('filter-input').classList.remove('is-invalid');
@@ -350,4 +409,6 @@ later(async function main() {
 
     document.getElementById('success').style.display = "inline";
   });
+
+  buildCategoryDropdown();
 });
