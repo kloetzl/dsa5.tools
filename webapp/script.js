@@ -4,7 +4,6 @@ const filterInput = document.getElementById('filter-input');
 const separator = '\n---\n';
 var converter;
 
-
 async function loadParse(path) {
   try {
     const response = await mdRequests[path];
@@ -131,7 +130,7 @@ function buildCategoryDropdown() {
   // Sample categories
 
   const entries = Array.from(document.getElementsByClassName('list-group-item'));
-  const categories = new Set();
+  var categories = new Set();
 
   entries.forEach(entry => {
     const category = extractCategoryFromEntry(entry);
@@ -140,6 +139,9 @@ function buildCategoryDropdown() {
       categories.add(category);
     }
   });
+
+  categories = Array.from(categories);
+  categories.sort();
 
   // Add categories to dropdown
   categories.forEach(category => {
@@ -167,7 +169,7 @@ function buildCategoryDropdown() {
       categoryDropdown.innerHTML = `<i class="bi bi-filter"></i> ${selectedText === 'Alle Kategorien' ? 'Alle' : selectedText}`;
       
       // Here you would trigger your filter function
-      filterEntries(`kategorie(${selectedText})`);
+      filterEntries(filterInput.value.toLowerCase());
     }
   });
   return;
@@ -175,14 +177,15 @@ function buildCategoryDropdown() {
 
 
 function filterEntries(filterString, elements) {
-  const matchesCriteria = parseSearchQuery(filterString);
+  const selectedCategory = document.querySelector('#category-list .active')?.getAttribute('data-category')
+  if (selectedCategory) {
+    filterString += ` kategorie(${selectedCategory})`;
+  }
 
-  const selectedCategory = document.getElementById('category-select')?.value;
+  const matchesCriteria = parseSearchQuery(filterString);
   const entries = elements ?? entryList.getElementsByClassName('list-group-item');
 
   Array.from(entries).forEach((entry) => {
-    const entryCategory = entry.getAttribute('data-category');
-    const categoryMatches = !selectedCategory || entryCategory === selectedCategory;
     const textMatches = matchesCriteria(entry);
 
     const isVisible = categoryMatches && textMatches;
