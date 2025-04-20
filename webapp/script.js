@@ -186,10 +186,7 @@ function filterEntries(filterString, elements) {
   const entries = elements ?? entryList.getElementsByClassName('list-group-item');
 
   Array.from(entries).forEach((entry) => {
-    const textMatches = matchesCriteria(entry);
-
-    const isVisible = categoryMatches && textMatches;
-    entry.style.display = isVisible ? 'block' : 'none';
+    entry.style.display = matchesCriteria(entry) ? 'block' : 'none';
   });
 
   document.getElementById('filter-input').classList.remove('is-invalid');
