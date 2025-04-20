@@ -178,7 +178,7 @@ function buildCategoryDropdown() {
 
 function filterEntries(filterString, elements) {
   const selectedCategory = document.querySelector('#category-list .active')?.getAttribute('data-category')
-  if (selectedCategory) {
+  if (selectedCategory && selectedCategory != 'all') {
     filterString += ` kategorie(${selectedCategory})`;
   }
 
