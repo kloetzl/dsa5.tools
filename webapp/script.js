@@ -4,6 +4,7 @@ const filterInput = document.getElementById('filter-input');
 const separator = '\n---\n';
 var converter;
 
+
 async function loadParse(path) {
   try {
     const response = await mdRequests[path];
@@ -36,13 +37,6 @@ async function loadParse(path) {
   });
 
   return keys.map(arr => arr[1]);
-}
-
-
-function display(elements) {
-  const wrapper = document.createDocumentFragment();
-  wrapper.append(...elements);
-  entryList.appendChild(wrapper);
 }
 
 
@@ -113,7 +107,6 @@ function parseSearchQuery(query) {
 }
 
 
-
 function extractCategoryFromEntry(entry) {
   const blockquote = entry.querySelector('blockquote');
   if (!blockquote) return null;
@@ -124,10 +117,9 @@ function extractCategoryFromEntry(entry) {
   return parts.length > 0 ? parts[0].trim() : null;
 }
 
+
 function buildCategoryDropdown() {
   const categoryList = document.getElementById('category-list');
-  
-  // Sample categories
 
   const entries = Array.from(document.getElementsByClassName('list-group-item'));
   var categories = new Set();
@@ -152,27 +144,24 @@ function buildCategoryDropdown() {
 
   // Category selection
   categoryList.addEventListener('click', function(e) {
-    if (e.target.classList.contains('dropdown-item')) {
-      e.preventDefault();
-      
-      // Remove active class from all items
-      document.querySelectorAll('#category-list .dropdown-item').forEach(item => {
-        item.classList.remove('active');
-      });
-      
-      // Add active class to clicked item
-      e.target.classList.add('active');
-      
-      // Update dropdown button text
-      const selectedText = e.target.textContent;
-      const categoryDropdown = document.getElementById('category-dropdown');
-      categoryDropdown.innerHTML = `<i class="bi bi-filter"></i> ${selectedText === 'Alle Kategorien' ? 'Alle' : selectedText}`;
-      
-      // Here you would trigger your filter function
-      filterEntries(filterInput.value.toLowerCase());
-    }
+    if (!e.target.classList.contains('dropdown-item')) return;
+    e.preventDefault();
+
+    // Remove active class from all items
+    document.querySelectorAll('#category-list .dropdown-item').forEach(item => {
+      item.classList.remove('active');
+    });
+
+    // Add active class to clicked item
+    e.target.classList.add('active');
+
+    // Update dropdown button text
+    const selectedText = e.target.textContent;
+    const categoryDropdown = document.getElementById('category-dropdown');
+    categoryDropdown.innerHTML = `<i class="bi bi-filter"></i> ${selectedText === 'Alle Kategorien' ? 'Alle' : selectedText}`;
+
+    filterEntries(filterInput.value.toLowerCase());
   });
-  return;
 }
 
 
@@ -188,8 +177,6 @@ function filterEntries(filterString, elements) {
   Array.from(entries).forEach((entry) => {
     entry.style.display = matchesCriteria(entry) ? 'block' : 'none';
   });
-
-  document.getElementById('filter-input').classList.remove('is-invalid');
 }
 
 
@@ -323,11 +310,6 @@ function glocal(haystack, needle) {
 }
 
 
-function later(callback) {
-  Promise.resolve().then(callback)
-}
-
-
 function tryReorder(filterString) {
   const isComplex = /(\w+)\((.*?)\)/g.test(filterString);
   if (isComplex) return;
@@ -354,6 +336,11 @@ function tryReorder(filterString) {
 
   // hoist best entries
   entryList.prepend(...elements);
+}
+
+
+function later(callback) {
+  Promise.resolve().then(callback)
 }
 
 
@@ -389,7 +376,9 @@ later(async function main() {
     if (filterString) {
       filterEntries(filterString, elements);
     }
-    display(elements);
+    const wrapper = document.createDocumentFragment();
+    wrapper.append(...elements);
+    entryList.appendChild(wrapper);
   });
   await Promise.all(contents);
 
