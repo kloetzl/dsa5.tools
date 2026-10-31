@@ -417,18 +417,28 @@ later(async function main() {
     themeIcon.className = 'bi bi-sun-fill';
   }
 
+  function toggleTheme(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      themeIcon?.classList.remove('bi-sun-fill');
+      themeIcon?.classList.add('bi-moon-stars');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      themeIcon?.classList.remove('bi-moon-stars');
+      themeIcon?.classList.add('bi-sun-fill');
+    }
+  }
+
   if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      if (isDark) {
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'light');
-        themeIcon.className = 'bi bi-moon-stars';
-      } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
-        themeIcon.className = 'bi bi-sun-fill';
-      }
+    themeToggle.addEventListener('click', toggleTheme);
+    themeToggle.addEventListener('mousedown', (e) => { e.stopPropagation(); });
+    themeToggle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') toggleTheme(e);
     });
   }
 
