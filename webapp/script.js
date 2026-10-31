@@ -357,6 +357,13 @@ later(async function main() {
     }, 500); // Debounce delay in ms
   });
 
+  document.addEventListener('keydown', (event) => {
+     if (event.key === '/' && document.activeElement !== filterInput) {
+       event.preventDefault();
+       filterInput.focus();
+     }
+   });
+
   window.addEventListener('popstate', (event) => {
     const newState = event.state;
     filterEntries(newState.filter);

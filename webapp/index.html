@@ -53,14 +53,15 @@
 
     .card {
       border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       margin-bottom: 1rem;
-      border: none;
+      border: 1px solid rgba(0, 0, 0, 0.06);
       background-color: var(--card-background);
     }
 
     .nav-tabs {
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      margin-bottom: 0.5rem;
     }
 
     .nav-tabs .nav-link {
@@ -105,6 +106,10 @@
       flex-grow: 1;
     }
 
+    #filter-input::placeholder {
+      color: #adb5bd;
+    }
+
     #filter-input:focus {
       box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
       border-color: var(--secondary-color);
@@ -146,12 +151,14 @@
     }
 
     .category-breadcrumb {
-      background-color: rgba(52, 152, 219, 0.1);
       border-radius: 6px;
       padding: 0.4rem 0.7rem;
-      margin-bottom: 0.5rem;
-      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.8rem;
       display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: #6c757d;
     }
 
     .breadcrumb-item {
@@ -159,46 +166,83 @@
     }
 
     .breadcrumb-separator {
-      color: #6c757d;
-      margin: 0 0.3rem;
+      color: #adb5bd;
+      margin: 0 0.5rem;
+      opacity: 0.6;
     }
 
     /* Entry list styling */
     #entry-list .list-group-item {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       border-radius: 8px;
-      padding: 0.75rem 1rem;
+      padding: 1rem 1.25rem;
       transition: all 0.2s ease;
       border-left: 4px solid transparent;
+      background-color: var(--card-background);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }
 
     #entry-list .list-group-item:hover {
       border-left: 4px solid var(--secondary-color);
       background-color: rgba(52, 152, 219, 0.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+    }
+
+    #entry-list .list-group-item h1,
+    #entry-list .list-group-item h2 {
+      margin-top: 0.25rem;
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      font-size: 1.5rem;
+      font-weight: 700;
     }
 
     .entry-title {
-      font-weight: 600;
-      margin-bottom: 0.3rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
       font-family: 'Fira Sans Condensed', Arial, sans-serif;
       color: var(--primary-color);
-      font-size: 1.25rem;
+      font-size: 1.5rem;
     }
 
     .entry-attribute {
       font-weight: 600;
       margin-right: 0.5rem;
+      color: var(--primary-color);
+      display: inline-block;
+      min-width: 9em;
     }
 
     .entry-description {
       margin-top: 0.5rem;
       text-align: justify;
+      line-height: 1.6;
+    }
+
+    /* Dropdown scrollbar */
+    .dropdown-menu::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .dropdown-menu::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .dropdown-menu::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 3px;
     }
 
     /* Tab content styles */
     #nav-tabContent {
       margin-top: 10px;
       padding: 0.8rem;
+    }
+
+    .tab-pane {
+      background-color: rgba(248, 249, 250, 0.5);
+      border-radius: 0 0 8px 8px;
     }
 
     .lead {
@@ -210,6 +254,8 @@
     .dropdown-menu {
       max-height: 300px;
       overflow-y: auto;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .dropdown-toggle.btn-sm {
@@ -227,6 +273,7 @@
     @media (max-width: 576px) {
       body {
         padding: 8px;
+        font-size: 0.95rem;
       }
       
       .card {
@@ -244,11 +291,22 @@
       }
       
       .entry-title {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
       }
       
       #entry-list .list-group-item {
-        padding: 0.6rem;
+        padding: 0.8rem 1rem;
+        margin-bottom: 8px;
+      }
+      
+      #entry-list .list-group-item h1,
+      #entry-list .list-group-item h2 {
+        font-size: 1.3rem;
+      }
+      
+      .entry-attribute {
+        min-width: auto;
+        display: block;
       }
       
       .clear-search {
@@ -303,8 +361,8 @@
         <h4>Datenschutz</h4>
         <p>Diese Webseite speichert keine personenbezogenen Daten; weder in serverseitigen Logs, noch per Cookies im Browser. Es werden allerdings die Artikel in einem Browser-seitigen Cache vorrätig gehalten. Dies dient einzig der beschleunigten Darstellung. Der Cache kann über die folgende Schaltfläche geleert werden.</p>
         <p>
-          <button id=clearcache style="btn btn-primary">Cache leeren.</button> <span style="display:none" id=success>Erfolgreich.</span><br>
-          <a href="?force-reload"><button>Cache neuladen</button></a>
+          <button id=clearcache class="btn btn-primary">Cache leeren.</button> <span style="display:none" id=success>Erfolgreich.</span><br>
+          <a href="?force-reload"><button class="btn btn-primary">Cache neuladen</button></a>
         </p>
       </div>
     </div>
@@ -313,7 +371,7 @@
   <div class="search-container">
     <div class="search-wrapper">
       <i class="bi bi-search search-icon"></i>
-      <input type="text" id="filter-input" class="form-control form-control-lg" placeholder="Suchen…" autofocus>
+      <input type="text" id="filter-input" class="form-control form-control-lg" aria-label="Suchen" placeholder="Suchen…" autofocus>
       <button class="clear-search" id="clear-search" aria-label="Suche löschen">
         <i class="bi bi-x-circle-fill"></i>
       </button>
