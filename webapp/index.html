@@ -41,14 +41,14 @@
     }
 
     [data-theme="dark"] {
-      --primary-color: #b0c4de;
+      --primary-color: #c5d4e8;
       --secondary-color: #5dade2;
-      --background-color: #1a1a2e;
-      --card-background: #16213e;
-      --text-color: #e0e0e0;
+      --background-color: #121212;
+      --card-background: #1e1e2f;
+      --text-color: #e8e8e8;
       --highlight-color: #e74c3c;
-      --border-color: rgba(255, 255, 255, 0.08);
-      --shadow-color: rgba(0, 0, 0, 0.3);
+      --border-color: rgba(255, 255, 255, 0.12);
+      --shadow-color: rgba(0, 0, 0, 0.4);
     }
     
     body {
@@ -78,7 +78,19 @@
     }
 
     [data-theme="dark"] .nav-tabs {
-      border-bottom-color: rgba(255, 255, 255, 0.1);
+      border-bottom-color: rgba(255, 255, 255, 0.15);
+    }
+
+    [data-theme="dark"] .nav-tabs .nav-link {
+      color: #a0aec0;
+    }
+
+    [data-theme="dark"] .nav-tabs .nav-link.active {
+      color: var(--secondary-color);
+    }
+
+    [data-theme="dark"] .tab-pane {
+      background-color: rgba(255, 255, 255, 0.03);
     }
 
     .nav-tabs .nav-link {
@@ -125,7 +137,8 @@
     }
 
     [data-theme="dark"] #filter-input {
-      border-color: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
+      background-color: #252540;
     }
 
     #filter-input::placeholder {
@@ -257,7 +270,44 @@
     }
 
     [data-theme="dark"] .dropdown-menu::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    [data-theme="dark"] .dropdown-toggle.btn-sm {
+      background-color: #252540;
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #e8e8e8;
+    }
+
+    [data-theme="dark"] .dropdown-toggle.btn-sm:hover {
+      background-color: rgba(52, 152, 219, 0.2);
+    }
+
+    [data-theme="dark"] #entry-list .list-group-item {
+      background-color: var(--card-background);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    [data-theme="dark"] #entry-list .list-group-item:hover {
+      background-color: #252540;
+      border-left-color: var(--secondary-color);
+    }
+
+    [data-theme="dark"] #entry-list .list-group-item h1,
+    [data-theme="dark"] #entry-list .list-group-item h2 {
+      border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="dark"] .entry-attribute {
+      color: var(--primary-color);
+    }
+
+    [data-theme="dark"] .category-breadcrumb {
+      color: #8899aa;
+    }
+
+    [data-theme="dark"] .breadcrumb-item {
+      color: var(--secondary-color);
     }
 
     /* Tab content styles */
