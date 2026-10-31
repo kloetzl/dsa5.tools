@@ -41,14 +41,14 @@
     }
 
     [data-theme="dark"] {
-      --primary-color: #c5d4e8;
-      --secondary-color: #5dade2;
-      --background-color: #121212;
-      --card-background: #1e1e2f;
-      --text-color: #e8e8e8;
+      --primary-color: #d4c5a9;
+      --secondary-color: #c9a84c;
+      --background-color: #1c1917;
+      --card-background: #292524;
+      --text-color: #d6d3d1;
       --highlight-color: #e74c3c;
-      --border-color: rgba(255, 255, 255, 0.12);
-      --shadow-color: rgba(0, 0, 0, 0.4);
+      --border-color: rgba(212, 197, 169, 0.12);
+      --shadow-color: rgba(0, 0, 0, 0.5);
     }
     
     body {
@@ -78,19 +78,26 @@
     }
 
     [data-theme="dark"] .nav-tabs {
-      border-bottom-color: rgba(255, 255, 255, 0.15);
+      border-bottom-color: rgba(212, 197, 169, 0.15);
     }
 
     [data-theme="dark"] .nav-tabs .nav-link {
-      color: #a0aec0;
+      color: #a8a29e;
     }
 
     [data-theme="dark"] .nav-tabs .nav-link.active {
       color: var(--secondary-color);
+      background-color: rgba(201, 168, 76, 0.08);
+      border-bottom-color: var(--secondary-color);
+    }
+
+    [data-theme="dark"] .nav-tabs .nav-link:hover {
+      color: var(--secondary-color);
+      background-color: rgba(201, 168, 76, 0.05);
     }
 
     [data-theme="dark"] .tab-pane {
-      background-color: rgba(255, 255, 255, 0.03);
+      background-color: rgba(0, 0, 0, 0.15);
     }
 
     .nav-tabs .nav-link {
@@ -137,8 +144,9 @@
     }
 
     [data-theme="dark"] #filter-input {
-      border-color: rgba(255, 255, 255, 0.2);
-      background-color: #252540;
+      border-color: rgba(212, 197, 169, 0.2);
+      background-color: #44403c;
+      color: #e7e5e4;
     }
 
     #filter-input::placeholder {
@@ -274,42 +282,64 @@
     }
 
     [data-theme="dark"] .dropdown-toggle.btn-sm {
-      background-color: #252540;
-      border-color: rgba(255, 255, 255, 0.2);
-      color: #e8e8e8;
+      background-color: #44403c;
+      border-color: rgba(212, 197, 169, 0.2);
+      color: #d6d3d1;
     }
 
     [data-theme="dark"] .dropdown-toggle.btn-sm:hover {
-      background-color: rgba(52, 152, 219, 0.2);
+      background-color: rgba(201, 168, 76, 0.15);
+      border-color: var(--secondary-color);
     }
 
     [data-theme="dark"] #entry-list .list-group-item {
       background-color: var(--card-background);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-      color: #f0f0f0;
-      --bs-list-group-color: #f0f0f0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      color: #d6d3d1;
+      --bs-list-group-color: #d6d3d1;
     }
 
     [data-theme="dark"] #entry-list .list-group-item:hover {
-      background-color: #252540;
+      background-color: #44403c;
       border-left-color: var(--secondary-color);
     }
 
     [data-theme="dark"] #entry-list .list-group-item h1,
     [data-theme="dark"] #entry-list .list-group-item h2 {
-      border-bottom-color: rgba(255, 255, 255, 0.1);
+      border-bottom-color: rgba(212, 197, 169, 0.12);
+      color: #e7e5e4;
     }
 
     [data-theme="dark"] .entry-attribute {
-      color: var(--primary-color);
+      color: #d4c5a9;
     }
 
     [data-theme="dark"] .category-breadcrumb {
-      color: #8899aa;
+      color: #a8a29e;
     }
 
     [data-theme="dark"] .breadcrumb-item {
       color: var(--secondary-color);
+    }
+
+    [data-theme="dark"] .lead {
+      color: #a8a29e;
+    }
+
+    [data-theme="dark"] a {
+      color: #c9a84c;
+    }
+
+    [data-theme="dark"] a:hover {
+      color: #e8d5a3;
+    }
+
+    [data-theme="dark"] .search-icon {
+      color: #a8a29e;
+    }
+
+    [data-theme="dark"] .clear-search {
+      color: #a8a29e;
     }
 
     /* Tab content styles */
